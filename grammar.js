@@ -61,7 +61,6 @@ module.exports = grammar({
   conflicts: $ => [
     [$._type_specifier, $._declarator],
     [$._type_specifier, $._expression],
-    // TODO: Review these conflicts
     [$._function_type_specifier, $._type_specifier],
     [$._function_type_specifier, $._type_specifier, $._expression]
   ],
@@ -75,6 +74,7 @@ module.exports = grammar({
       choice(
         $.function_definition,
         $.export_declaration,
+        // $.top_level_declaration,
         $.declaration,
         $._statement,
         $._empty_declaration,
@@ -136,6 +136,9 @@ module.exports = grammar({
         ';'
       ),
 
+    top_level_declaration: $ =>
+      seq(choice($.struct_specifier, $.enum_specifier), ';'),
+
     export_declaration: $ => seq('export', commaSep1($.identifier), ';'),
 
     // import_declaration: $=> seq('import', choice(), ';'),
@@ -144,11 +147,7 @@ module.exports = grammar({
       seq('import', $._function_definition_specifiers),
 
     _function_definition_specifiers: $ =>
-      seq(
-        repeat(choice('protected', 'static')),
-        $._function_type_specifier,
-        optional('noloopcheck')
-      ),
+      seq(repeat(choice('protected', 'static')), $._function_type_specifier),
 
     _function_type_specifier: $ =>
       choice('function', 'void', $.primitive_type, $._type_identifier),
@@ -158,13 +157,9 @@ module.exports = grammar({
     _parameter_declaration_specifiers: $ =>
       seq(optional('const'), $._type_specifier),
 
-    _declarator: $ =>
-      choice(
-        $.pointer_declarator,
-        $.function_declarator,
-        $.array_declarator,
-        $.identifier
-      ),
+    _declarator: $ => choice($.pointer_declarator, $._pointerless_declarator),
+
+    _pointerless_declarator: $ => choice($.array_declarator, $.identifier),
 
     _parameter_declarator: $ =>
       choice($.pointer_declarator, $.array_declarator, $.enumerator),
@@ -172,48 +167,50 @@ module.exports = grammar({
     _field_declarator: $ =>
       choice(
         alias($.pointer_field_declarator, $.pointer_declarator),
+        $._pointerless_field_declarator
+      ),
+
+    _pointerless_field_declarator: $ =>
+      choice(
         alias($.function_field_declarator, $.function_declarator),
         alias($.array_field_declarator, $.array_declarator),
         $._field_identifier
       ),
 
-    _type_declarator: $ =>
-      choice(
-        alias($.pointer_type_declarator, $.pointer_declarator),
-        alias($.function_type_declarator, $.function_declarator),
-        alias($.array_type_declarator, $.array_declarator),
-        $._type_identifier
-      ),
-
     //TODO: Pointers are only supported on managed types
     pointer_declarator: $ =>
-      prec.dynamic(1, prec.right(seq('*', $._declarator))),
+      prec.dynamic(1, prec.right(seq('*', $._pointerless_declarator))),
     pointer_field_declarator: $ =>
-      prec.dynamic(1, prec.right(seq('*', $._field_declarator))),
-    pointer_type_declarator: $ =>
-      prec.dynamic(1, prec.right(seq('*', $._type_declarator))),
+      prec.dynamic(1, prec.right(seq('*', $._pointerless_field_declarator))),
 
-    function_declarator: $ => prec(1, seq($._declarator, $.parameter_list)),
+    function_declarator: $ =>
+      prec(1, seq($._function_declarator, $.parameter_list)),
+
+    _function_declarator: $ =>
+      choice(
+        $._function_pointer_declarator,
+        $._function_pointerless_declarator
+      ),
+    _function_pointer_declarator: $ =>
+      prec.dynamic(1, prec.right(seq('*', $._function_pointerless_declarator))),
+    _function_pointerless_declarator: $ =>
+      choice($._function_array_declarator, $._function_identifier),
+    _function_array_declarator: $ => prec(1, seq('[]', $._function_identifier)),
+    _function_identifier: $ =>
+      seq(optional('noloopcheck'), $.optional_scoped_identifier),
 
     function_field_declarator: $ =>
       prec(1, seq($._field_declarator, $.parameter_list)),
-    function_type_declarator: $ =>
-      prec(1, seq($._type_declarator, $.parameter_list)),
 
     array_declarator: $ =>
       prec(
         1,
-        seq($._declarator, '[', optional(choice($._expression, '*')), ']')
+        seq($.identifier, '[', optional(choice($._expression, '*')), ']')
       ),
     array_field_declarator: $ =>
       prec(
         1,
         seq($._field_declarator, '[', optional(choice($._expression, '*')), ']')
-      ),
-    array_type_declarator: $ =>
-      prec(
-        1,
-        seq($._type_declarator, '[', optional(choice($._expression, '*')), ']')
       ),
 
     init_declarator: $ =>
@@ -223,14 +220,7 @@ module.exports = grammar({
 
     struct_type_qualifier: $ => choice('writeprotected', 'protected'),
 
-    _type_specifier: $ =>
-      choice(
-        // TODO: Figure out where to declare enum and struct statements.
-        $.struct_specifier,
-        $.enum_specifier,
-        $.primitive_type,
-        $._type_identifier
-      ),
+    _type_specifier: $ => choice($.primitive_type, $._type_identifier),
 
     primitive_type: $ =>
       token(choice('bool', 'char', 'float', 'int', 'long', 'short', 'string')),
@@ -358,7 +348,6 @@ module.exports = grammar({
         $.subscript_expression,
         $.call_expression,
         $.field_expression,
-        $.compound_literal_expression,
         $.identifier,
         $.number_literal,
         $.string_literal,
@@ -431,8 +420,6 @@ module.exports = grammar({
         prec.right(PREC.UNARY, seq($._expression, choice('++', '--')))
       ),
 
-    type_descriptor: $ => $._type_specifier,
-
     subscript_expression: $ =>
       prec(PREC.SUBSCRIPT, seq($._expression, '[', $._expression, ']')),
 
@@ -442,9 +429,6 @@ module.exports = grammar({
 
     field_expression: $ =>
       seq(prec(PREC.FIELD, seq($._expression, '.')), $._field_identifier),
-
-    compound_literal_expression: $ =>
-      seq('(', $.type_descriptor, ')', $.initializer_list),
 
     parenthesized_expression: $ =>
       seq('(', choice($._expression, $.comma_expression), ')'),
@@ -516,11 +500,12 @@ module.exports = grammar({
     version_literal: $ => /\d+(\.\d+)?(\.\d+)?/,
 
     identifier: $ => /[a-zA-Z_]\w*/,
+    scoped_identifier: $ => prec(1, seq($.identifier, '::', $.identifier)),
+    optional_scoped_identifier: $ => choice($.identifier, $.scoped_identifier),
 
     _type_identifier: $ => alias($.identifier, $.type_identifier),
     _field_identifier: $ => alias($.identifier, $.field_identifier),
     _statement_identifier: $ => alias($.identifier, $.statement_identifier),
-    _scoped_identifier: $ => prec(1, seq($.identifier, '::', $.identifier)),
 
     _empty_declaration: $ => seq($._declaration_specifiers, ';'),
 
