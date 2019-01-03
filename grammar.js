@@ -45,6 +45,8 @@ const commaSep1 = rule => seq(rule, repeat(seq(',', rule)))
 const commaSepTrailing = (recurSymbol, rule) =>
   choice(rule, seq(recurSymbol, ',', rule))
 
+const statement = (...args) => seq(...args, ';')
+
 module.exports = grammar({
   name: 'ags_script',
 
@@ -127,21 +129,20 @@ module.exports = grammar({
       ),
 
     function_declaration: $ =>
-      seq($._function_import_specifiers, $.function_declarator, ';'),
+      statement($._function_import_specifiers, $.function_declarator),
 
     declaration: $ =>
-      seq(
+      statement(
         $._declaration_specifiers,
-        commaSep1(choice($._declarator, $.init_declarator)),
-        ';'
+        commaSep1(choice($._declarator, $.init_declarator))
       ),
 
     top_level_declaration: $ =>
-      seq(choice($.struct_specifier, $.enum_specifier), ';'),
+      statement(choice($.struct_specifier, $.enum_specifier)),
 
-    export_declaration: $ => seq('export', commaSep1($.identifier), ';'),
+    export_declaration: $ => statement('export', commaSep1($.identifier)),
 
-    // import_declaration: $=> seq('import', choice(), ';'),
+    // import_declaration: $=> statement('import', choice()),
 
     _function_import_specifiers: $ =>
       seq('import', $._function_definition_specifiers),
@@ -248,10 +249,13 @@ module.exports = grammar({
       ),
 
     field_declaration: $ =>
-      seq($._declaration_specifiers, commaSep($._field_declarator), ';'),
+      statement($._declaration_specifiers, commaSep($._field_declarator)),
 
     enumerator: $ =>
-      seq($.identifier, optional(seq('=', choice($.identifier, $.literal)))),
+      statement(
+        $.identifier,
+        optional(seq('=', choice($.identifier, $.literal)))
+      ),
 
     parameter_list: $ => seq('(', commaSep($.parameter_declaration), ')'),
 
@@ -278,7 +282,7 @@ module.exports = grammar({
       ),
 
     expression_statement: $ =>
-      seq(optional(choice($._expression, $.comma_expression)), ';'),
+      statement(optional(choice($._expression, $.comma_expression))),
 
     if_statement: $ =>
       prec.right(
@@ -319,7 +323,7 @@ module.exports = grammar({
       seq(
         'for',
         '(',
-        choice($.declaration, seq(optional($._expression), ';')),
+        choice($.declaration, statement(optional($._expression))),
         optional($._expression),
         ';',
         commaSep($._expression),
@@ -327,11 +331,11 @@ module.exports = grammar({
         $._statement
       ),
 
-    return_statement: $ => seq('return', optional($._expression), ';'),
+    return_statement: $ => statement('return', optional($._expression)),
 
-    break_statement: $ => seq('break', ';'),
+    break_statement: $ => statement('break'),
 
-    continue_statement: $ => seq('continue', ';'),
+    continue_statement: $ => statement('continue'),
 
     // Expressions
 
@@ -507,7 +511,7 @@ module.exports = grammar({
     _field_identifier: $ => alias($.identifier, $.field_identifier),
     _statement_identifier: $ => alias($.identifier, $.statement_identifier),
 
-    _empty_declaration: $ => seq($._declaration_specifiers, ';'),
+    _empty_declaration: $ => statement($._declaration_specifiers),
 
     // http://stackoverflow.com/questions/13014947/regex-to-match-a-c-style-multiline-comment/36328890#36328890
     comment: $ =>
