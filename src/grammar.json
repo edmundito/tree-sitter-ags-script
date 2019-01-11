@@ -26,6 +26,14 @@
         },
         {
           "type": "SYMBOL",
+          "name": "enum_specifier"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_top_level_declaration"
+        },
+        {
+          "type": "SYMBOL",
           "name": "declaration"
         },
         {
@@ -370,21 +378,12 @@
         }
       ]
     },
-    "top_level_declaration": {
+    "_top_level_declaration": {
       "type": "SEQ",
       "members": [
         {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "struct_specifier"
-            },
-            {
-              "type": "SYMBOL",
-              "name": "enum_specifier"
-            }
-          ]
+          "type": "SYMBOL",
+          "name": "enum_specifier"
         },
         {
           "type": "STRING",

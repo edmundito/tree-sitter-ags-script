@@ -77,7 +77,8 @@ module.exports = grammar({
         $.function_definition,
         $.import_declaration,
         $.export_declaration,
-        // $.top_level_declaration,
+        $.enum_specifier,
+        $._top_level_declaration,
         $.declaration,
         $._empty_declaration,
         $.preproc_ifver,
@@ -137,8 +138,8 @@ module.exports = grammar({
         commaSep1(choice($._declarator, $.init_declarator))
       ),
 
-    top_level_declaration: $ =>
-      statement(choice($.struct_specifier, $.enum_specifier)),
+    _top_level_declaration: $ => statement($.enum_specifier),
+    // statement(choice($.struct_specifier, $.enum_specifier)),
 
     export_declaration: $ => statement('export', commaSep1($.identifier)),
 

@@ -16,6 +16,42 @@ export a, B, c1, _d;
 )
 
 ===========================================
+enum
+===========================================
+
+enum CharacterDirection {
+  eDirectionDown = 0,
+  eDirectionLeft,
+  eDirectionRight,
+  eDirectionUp,
+  eDirectionDownRight,
+  eDirectionUpRight,
+  eDirectionDownLeft,
+  eDirectionUpLeft,
+  eDirectionNone = SCR_NO_VALUE
+};
+
+---
+
+(source_file
+    (enum_specifier
+        (type_identifier)
+        (enumerator_list
+            (enumerator (identifier) (number_literal))
+            (enumerator (identifier))
+            (enumerator (identifier))
+            (enumerator (identifier))
+            (enumerator (identifier))
+            (enumerator (identifier))
+            (enumerator (identifier))
+            (enumerator (identifier))
+            (enumerator (identifier) (identifier))
+        )
+    )
+)
+
+
+===========================================
 import function
 ===========================================
 
