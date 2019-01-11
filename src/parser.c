@@ -23748,7 +23748,7 @@ static TSParseActionEntry ts_parse_actions[] = {
   [442] = {.count = 1, .reusable = true}, SHIFT(172),
   [444] = {.count = 1, .reusable = true}, REDUCE(sym_struct_declaration, 4, .alias_sequence_id = 2),
   [446] = {.count = 1, .reusable = false}, REDUCE(sym_struct_declaration, 4, .alias_sequence_id = 2),
-  [448] = {.count = 1, .reusable = true}, REDUCE(sym_scoped_identifier, 3),
+  [448] = {.count = 1, .reusable = true}, REDUCE(sym_scoped_identifier, 3, .alias_sequence_id = 1),
   [450] = {.count = 1, .reusable = true}, REDUCE(sym_expression_statement, 1),
   [452] = {.count = 1, .reusable = false}, REDUCE(sym_expression_statement, 1),
   [454] = {.count = 1, .reusable = true}, SHIFT(173),

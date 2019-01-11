@@ -553,7 +553,8 @@ module.exports = grammar({
     version_literal: $ => /\d+(\.\d+)?(\.\d+)?/,
 
     identifier: $ => /[a-zA-Z_]\w*/,
-    scoped_identifier: $ => prec(1, seq($.identifier, '::', $.identifier)),
+    scoped_identifier: $ =>
+      prec(1, seq($._type_identifier, '::', $.identifier)),
     _optional_scoped_identifier: $ => choice($.identifier, $.scoped_identifier),
 
     _type_identifier: $ => alias($.identifier, $.type_identifier),

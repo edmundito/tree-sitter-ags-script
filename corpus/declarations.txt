@@ -133,7 +133,7 @@ protected int noloopcheck Obj::HelloWorld(const int a, float, char c)
         (primitive_type)
         (function_declarator
             (function_qualifier)
-            (scoped_identifier (identifier) (identifier))
+            (scoped_identifier (type_identifier) (identifier))
             (parameter_list
                 (parameter_declaration (type_qualifier) (primitive_type) (identifier))
                 (parameter_declaration (primitive_type))
