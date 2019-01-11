@@ -26,11 +26,11 @@
         },
         {
           "type": "SYMBOL",
-          "name": "enum_specifier"
+          "name": "enum_declaration"
         },
         {
           "type": "SYMBOL",
-          "name": "_top_level_declaration"
+          "name": "struct_declaration"
         },
         {
           "type": "SYMBOL",
@@ -390,7 +390,7 @@
             },
             {
               "type": "SYMBOL",
-              "name": "enum_specifier"
+              "name": "enum_declaration"
             }
           ]
         },
@@ -1108,7 +1108,7 @@
         ]
       }
     },
-    "enum_specifier": {
+    "enum_declaration": {
       "type": "SEQ",
       "members": [
         {
@@ -1122,6 +1122,10 @@
         {
           "type": "SYMBOL",
           "name": "enumerator_list"
+        },
+        {
+          "type": "STRING",
+          "value": ";"
         }
       ]
     },
@@ -1209,6 +1213,10 @@
         {
           "type": "SYMBOL",
           "name": "field_declaration_list"
+        },
+        {
+          "type": "STRING",
+          "value": ";"
         }
       ]
     },

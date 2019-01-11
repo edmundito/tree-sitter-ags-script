@@ -77,8 +77,8 @@ module.exports = grammar({
         $.function_definition,
         $.import_declaration,
         $.export_declaration,
-        $.enum_specifier,
-        $._top_level_declaration,
+        $.enum_declaration,
+        $.struct_declaration,
         $.declaration,
         $._empty_declaration,
         $.preproc_ifver,
@@ -139,7 +139,7 @@ module.exports = grammar({
       ),
 
     _top_level_declaration: $ =>
-      statement(choice($.struct_declaration, $.enum_specifier)),
+      statement(choice($.struct_declaration, $.enum_declaration)),
 
     export_declaration: $ => statement('export', commaSep1($.identifier)),
 
@@ -255,12 +255,13 @@ module.exports = grammar({
     primitive_type: $ =>
       token(choice('bool', 'char', 'float', 'int', 'long', 'short', 'string')),
 
-    enum_specifier: $ => seq('enum', $._type_identifier, $.enumerator_list),
+    enum_declaration: $ =>
+      statement('enum', $._type_identifier, $.enumerator_list),
 
     enumerator_list: $ => seq('{', commaSep($.enumerator), optional(','), '}'),
 
     struct_declaration: $ =>
-      seq(
+      statement(
         'struct',
         $._type_identifier,
         optional($.extends_type),

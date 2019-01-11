@@ -34,7 +34,7 @@ enum CharacterDirection {
 ---
 
 (source_file
-    (enum_specifier
+    (enum_declaration
         (type_identifier)
         (enumerator_list
             (enumerator (identifier) (number_literal))
