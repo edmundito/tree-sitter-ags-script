@@ -1,0 +1,110 @@
+===========================================
+function import
+===========================================
+
+import function HelloWorld();
+
+---
+
+(source_file
+    (import_declaration
+        (function_declaration
+            (function_type)
+            (function_import_declarator
+                (identifier)
+                (parameter_import_list)
+            )
+        )
+    )
+)
+
+===========================================
+function complex import
+===========================================
+
+import protected int HelloWorld(const int a, float, char c = 'c');
+
+---
+
+(source_file
+    (import_declaration
+        (function_declaration
+            (access_specifier)
+            (primitive_type)
+            (function_import_declarator
+                (identifier)
+                (parameter_import_list
+                    (parameter_import_declaration (type_qualifier) (primitive_type) (enumerator (identifier)))
+                    (parameter_import_declaration (primitive_type))
+                    (parameter_import_declaration (primitive_type) (enumerator (identifier) (char_literal)))
+                )
+            )
+        )
+    )
+)
+
+===========================================
+function definition
+===========================================
+
+function HelloWorld()
+{
+}
+
+---
+
+(source_file
+    (function_definition
+        (function_type)
+        (function_declarator
+            (identifier)
+            (parameter_list)
+        )
+        (compound_statement)
+    )
+)
+
+===========================================
+function complex definition
+===========================================
+
+protected int noloopcheck Obj::HelloWorld(const int a, float, char c)
+{
+}
+
+---
+
+(source_file
+    (function_definition
+        (access_specifier)
+        (primitive_type)
+        (function_declarator
+            (function_qualifier)
+            (scoped_identifier (identifier) (identifier))
+            (parameter_list
+                (parameter_declaration (type_qualifier) (primitive_type) (identifier))
+                (parameter_declaration (primitive_type))
+                (parameter_declaration (primitive_type) (identifier))
+            )
+        )
+        (compound_statement)
+    )
+)
+
+===========================================
+export
+===========================================
+
+export a, B, c1, _d;
+
+---
+
+(source_file
+    (export_declaration
+        (identifier)
+        (identifier)
+        (identifier)
+        (identifier)
+    )
+)
+

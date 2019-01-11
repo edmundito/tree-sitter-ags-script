@@ -70,15 +70,15 @@ module.exports = grammar({
   word: $ => $.identifier,
 
   rules: {
-    translation_unit: $ => repeat($._top_level_item),
+    source_file: $ => repeat($._top_level_item),
 
     _top_level_item: $ =>
       choice(
         $.function_definition,
+        $.import_declaration,
         $.export_declaration,
         // $.top_level_declaration,
         $.declaration,
-        $._statement,
         $._empty_declaration,
         $.preproc_ifver,
         $.preproc_ifdef,
@@ -129,7 +129,7 @@ module.exports = grammar({
       ),
 
     function_declaration: $ =>
-      statement($._function_import_specifiers, $.function_declarator),
+      seq($._function_definition_specifiers, $.function_import_declarator),
 
     declaration: $ =>
       statement(
@@ -142,27 +142,36 @@ module.exports = grammar({
 
     export_declaration: $ => statement('export', commaSep1($.identifier)),
 
-    // import_declaration: $=> statement('import', choice()),
+    import_declaration: $ =>
+      statement('import', choice($.function_declaration, $._type_declaration)),
 
-    _function_import_specifiers: $ =>
-      seq('import', $._function_definition_specifiers),
+    _type_declaration: $ => seq($._type_specifier, $.identifier),
 
     _function_definition_specifiers: $ =>
-      seq(repeat(choice('protected', 'static')), $._function_type_specifier),
+      seq(repeat($.access_specifier), $._function_type_specifier),
+
+    access_specifier: $ => choice('protected', 'static'),
 
     _function_type_specifier: $ =>
-      choice('function', 'void', $.primitive_type, $._type_identifier),
+      choice($.function_type, $.primitive_type, $._type_identifier),
+
+    function_type: $ => choice('function', 'void'),
 
     _declaration_specifiers: $ => $._type_specifier,
 
     _parameter_declaration_specifiers: $ =>
-      seq(optional('const'), $._type_specifier),
+      seq(optional($.type_qualifier), $._type_specifier),
+
+    type_qualifier: $ => 'const',
 
     _declarator: $ => choice($.pointer_declarator, $._pointerless_declarator),
 
     _pointerless_declarator: $ => choice($.array_declarator, $.identifier),
 
     _parameter_declarator: $ =>
+      choice($.pointer_declarator, $.array_declarator, $.identifier),
+
+    _parameter_import_declarator: $ =>
       choice($.pointer_declarator, $.array_declarator, $.enumerator),
 
     _field_declarator: $ =>
@@ -198,7 +207,26 @@ module.exports = grammar({
       choice($._function_array_declarator, $._function_identifier),
     _function_array_declarator: $ => prec(1, seq('[]', $._function_identifier)),
     _function_identifier: $ =>
-      seq(optional('noloopcheck'), $.optional_scoped_identifier),
+      seq(optional($.function_qualifier), $._optional_scoped_identifier),
+
+    function_qualifier: $ => 'noloopcheck',
+
+    function_import_declarator: $ =>
+      prec(1, seq($._function_import_declarator, $.parameter_import_list)),
+
+    _function_import_declarator: $ =>
+      choice(
+        $._function_import_pointer_declarator,
+        $._function_import_pointerless_declarator
+      ),
+    _function_import_pointer_declarator: $ =>
+      prec.dynamic(
+        1,
+        prec.right(seq('*', $._function_import_pointerless_declarator))
+      ),
+    _function_import_pointerless_declarator: $ =>
+      choice($._function_import_array_declarator, $.identifier),
+    _function_import_array_declarator: $ => prec(1, seq('[]', $.identifier)),
 
     function_field_declarator: $ =>
       prec(1, seq($._field_declarator, $.parameter_list)),
@@ -252,10 +280,7 @@ module.exports = grammar({
       statement($._declaration_specifiers, commaSep($._field_declarator)),
 
     enumerator: $ =>
-      statement(
-        $.identifier,
-        optional(seq('=', choice($.identifier, $.literal)))
-      ),
+      seq($.identifier, optional(seq('=', choice($.identifier, $._literal)))),
 
     parameter_list: $ => seq('(', commaSep($.parameter_declaration), ')'),
 
@@ -263,6 +288,15 @@ module.exports = grammar({
       seq(
         $._parameter_declaration_specifiers,
         optional($._parameter_declarator)
+      ),
+
+    parameter_import_list: $ =>
+      seq('(', commaSep($.parameter_import_declaration), ')'),
+
+    parameter_import_declaration: $ =>
+      seq(
+        $._parameter_declaration_specifiers,
+        optional($._parameter_import_declarator)
       ),
 
     // Statements
@@ -491,7 +525,7 @@ module.exports = grammar({
     false: $ => 'false',
     null: $ => 'null',
 
-    literal: $ =>
+    _literal: $ =>
       choice(
         $.number_literal,
         $.string_literal,
@@ -505,7 +539,7 @@ module.exports = grammar({
 
     identifier: $ => /[a-zA-Z_]\w*/,
     scoped_identifier: $ => prec(1, seq($.identifier, '::', $.identifier)),
-    optional_scoped_identifier: $ => choice($.identifier, $.scoped_identifier),
+    _optional_scoped_identifier: $ => choice($.identifier, $.scoped_identifier),
 
     _type_identifier: $ => alias($.identifier, $.type_identifier),
     _field_identifier: $ => alias($.identifier, $.field_identifier),
