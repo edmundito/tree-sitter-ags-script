@@ -1,5 +1,22 @@
 ===========================================
-function import
+export
+===========================================
+
+export a, B, c1, _d;
+
+---
+
+(source_file
+    (export_declaration
+        (identifier)
+        (identifier)
+        (identifier)
+        (identifier)
+    )
+)
+
+===========================================
+import function
 ===========================================
 
 import function HelloWorld();
@@ -19,7 +36,7 @@ import function HelloWorld();
 )
 
 ===========================================
-function complex import
+import complex function
 ===========================================
 
 import protected int HelloWorld(const int a, float, char c = 'c');
@@ -44,7 +61,7 @@ import protected int HelloWorld(const int a, float, char c = 'c');
 )
 
 ===========================================
-function definition
+define function
 ===========================================
 
 function HelloWorld()
@@ -65,7 +82,7 @@ function HelloWorld()
 )
 
 ===========================================
-function complex definition
+define complex function
 ===========================================
 
 protected int noloopcheck Obj::HelloWorld(const int a, float, char c)
@@ -90,21 +107,3 @@ protected int noloopcheck Obj::HelloWorld(const int a, float, char c)
         (compound_statement)
     )
 )
-
-===========================================
-export
-===========================================
-
-export a, B, c1, _d;
-
----
-
-(source_file
-    (export_declaration
-        (identifier)
-        (identifier)
-        (identifier)
-        (identifier)
-    )
-)
-
