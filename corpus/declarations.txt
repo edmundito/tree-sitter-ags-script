@@ -148,7 +148,7 @@ protected int noloopcheck Obj::HelloWorld(const int a, float, char c)
 struct
 ===========================================
 
-struct Tween {
+struct MyModule {
 
 };
 
@@ -162,10 +162,33 @@ struct Tween {
 )
 
 ===========================================
+struct with fields
+===========================================
+
+struct MyModule {
+    int MyVar;
+    writeprotected int MyReadOnlyVar;
+    protected int my_var;
+};
+
+---
+
+(source_file
+    (struct_declaration
+        (type_identifier)
+        (field_declaration_list
+            (field_declaration (primitive_type) (field_identifier))
+            (field_declaration (field_type_qualifier) (primitive_type) (field_identifier))
+            (field_declaration (field_type_qualifier) (primitive_type) (field_identifier))
+        )
+    )
+)
+
+===========================================
 extended struct
 ===========================================
 
-struct Tween extends TweenBase {
+struct MyModule extends MyModuleBase {
 
 };
 
@@ -175,6 +198,23 @@ struct Tween extends TweenBase {
     (struct_declaration
         (type_identifier)
         (extends_type (type_identifier))
+        (field_declaration_list)
+    )
+)
+
+===========================================
+managed struct
+===========================================
+
+managed struct MyModule {
+};
+
+---
+
+(source_file
+    (struct_declaration
+        (struct_type_qualifier)
+        (type_identifier)
         (field_declaration_list)
     )
 )

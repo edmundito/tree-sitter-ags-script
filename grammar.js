@@ -183,7 +183,7 @@ module.exports = grammar({
 
     _pointerless_field_declarator: $ =>
       choice(
-        alias($.function_field_declarator, $.function_declarator),
+        // alias($.function_field_declarator, $.function_declarator),
         alias($.array_field_declarator, $.array_declarator),
         $._field_identifier
       ),
@@ -240,7 +240,7 @@ module.exports = grammar({
     array_field_declarator: $ =>
       prec(
         1,
-        seq($._field_declarator, '[', optional(choice($._expression, '*')), ']')
+        seq($._field_identifier, '[', optional(choice($._expression, '*')), ']')
       ),
 
     init_declarator: $ =>
@@ -248,7 +248,9 @@ module.exports = grammar({
 
     compound_statement: $ => seq('{', repeat($._block_level_item), '}'),
 
-    struct_type_qualifier: $ => choice('writeprotected', 'protected'),
+    field_type_qualifier: $ => choice('writeprotected', 'protected'),
+
+    struct_type_qualifier: $ => 'managed',
 
     _type_specifier: $ => choice($.primitive_type, $._type_identifier),
 
@@ -262,6 +264,7 @@ module.exports = grammar({
 
     struct_declaration: $ =>
       statement(
+        optional($.struct_type_qualifier),
         'struct',
         $._type_identifier,
         optional($.extends_type),
@@ -275,13 +278,17 @@ module.exports = grammar({
 
     _field_declaration_list_item: $ =>
       choice(
-        // $.field_declaration,
+        $.field_declaration,
         alias($.preproc_ifver_in_field_declaration_list, $.preproc_ifver),
         alias($.preproc_ifdef_in_field_declaration_list, $.preproc_ifdef)
       ),
 
     field_declaration: $ =>
-      statement($._declaration_specifiers, commaSep($._field_declarator)),
+      statement(
+        optional($.field_type_qualifier),
+        $._declaration_specifiers,
+        $._field_declarator
+      ),
 
     enumerator: $ =>
       seq($.identifier, optional(seq('=', choice($.identifier, $._literal)))),

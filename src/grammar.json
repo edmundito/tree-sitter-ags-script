@@ -650,15 +650,6 @@
           "type": "ALIAS",
           "content": {
             "type": "SYMBOL",
-            "name": "function_field_declarator"
-          },
-          "named": true,
-          "value": "function_declarator"
-        },
-        {
-          "type": "ALIAS",
-          "content": {
-            "type": "SYMBOL",
             "name": "array_field_declarator"
           },
           "named": true,
@@ -966,7 +957,7 @@
         "members": [
           {
             "type": "SYMBOL",
-            "name": "_field_declarator"
+            "name": "_field_identifier"
           },
           {
             "type": "STRING",
@@ -1046,7 +1037,7 @@
         }
       ]
     },
-    "struct_type_qualifier": {
+    "field_type_qualifier": {
       "type": "CHOICE",
       "members": [
         {
@@ -1058,6 +1049,10 @@
           "value": "protected"
         }
       ]
+    },
+    "struct_type_qualifier": {
+      "type": "STRING",
+      "value": "managed"
     },
     "_type_specifier": {
       "type": "CHOICE",
@@ -1191,6 +1186,18 @@
       "type": "SEQ",
       "members": [
         {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "struct_type_qualifier"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
           "type": "STRING",
           "value": "struct"
         },
@@ -1257,6 +1264,10 @@
       "type": "CHOICE",
       "members": [
         {
+          "type": "SYMBOL",
+          "name": "field_declaration"
+        },
+        {
           "type": "ALIAS",
           "content": {
             "type": "SYMBOL",
@@ -1280,41 +1291,24 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "SYMBOL",
-          "name": "_declaration_specifiers"
-        },
-        {
           "type": "CHOICE",
           "members": [
             {
-              "type": "SEQ",
-              "members": [
-                {
-                  "type": "SYMBOL",
-                  "name": "_field_declarator"
-                },
-                {
-                  "type": "REPEAT",
-                  "content": {
-                    "type": "SEQ",
-                    "members": [
-                      {
-                        "type": "STRING",
-                        "value": ","
-                      },
-                      {
-                        "type": "SYMBOL",
-                        "name": "_field_declarator"
-                      }
-                    ]
-                  }
-                }
-              ]
+              "type": "SYMBOL",
+              "name": "field_type_qualifier"
             },
             {
               "type": "BLANK"
             }
           ]
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_declaration_specifiers"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_field_declarator"
         },
         {
           "type": "STRING",
