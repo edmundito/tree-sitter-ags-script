@@ -82,7 +82,7 @@ import protected int HelloWorld(const int a, float, char c = 'c');
 (source_file
     (import_declaration
         (function_declaration
-            (access_specifier)
+            (function_access_specifier)
             (primitive_type)
             (function_import_declarator
                 (identifier)
@@ -129,7 +129,7 @@ protected int noloopcheck Obj::HelloWorld(const int a, float, char c)
 
 (source_file
     (function_definition
-        (access_specifier)
+        (function_access_specifier)
         (primitive_type)
         (function_declarator
             (function_qualifier)
@@ -178,8 +178,37 @@ struct MyModule {
         (type_identifier)
         (field_declaration_list
             (field_declaration (primitive_type) (field_identifier))
-            (field_declaration (field_type_qualifier) (primitive_type) (field_identifier))
-            (field_declaration (field_type_qualifier) (primitive_type) (field_identifier))
+            (field_declaration (field_access_specifier) (primitive_type) (field_identifier))
+            (field_declaration (field_access_specifier) (primitive_type) (field_identifier))
+        )
+    )
+)
+
+===========================================
+struct with functions
+===========================================
+
+struct MyModule {
+    import function Method();
+    import protected static function ProtectedStaticMethod();
+};
+
+---
+
+(source_file
+    (struct_declaration
+        (type_identifier)
+        (field_declaration_list
+            (field_import_declaration
+                (function_declaration (function_type)
+                    (function_import_declarator (identifier) (parameter_import_list))
+                )
+            )
+            (field_import_declaration
+                (function_declaration (function_access_specifier) (function_access_specifier) (function_type)
+                    (function_import_declarator (identifier) (parameter_import_list))
+                )
+            )
         )
     )
 )

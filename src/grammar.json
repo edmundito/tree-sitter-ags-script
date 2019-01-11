@@ -484,7 +484,7 @@
           "type": "REPEAT",
           "content": {
             "type": "SYMBOL",
-            "name": "access_specifier"
+            "name": "function_access_specifier"
           }
         },
         {
@@ -493,7 +493,7 @@
         }
       ]
     },
-    "access_specifier": {
+    "function_access_specifier": {
       "type": "CHOICE",
       "members": [
         {
@@ -1037,7 +1037,7 @@
         }
       ]
     },
-    "field_type_qualifier": {
+    "field_access_specifier": {
       "type": "CHOICE",
       "members": [
         {
@@ -1268,6 +1268,10 @@
           "name": "field_declaration"
         },
         {
+          "type": "SYMBOL",
+          "name": "field_import_declaration"
+        },
+        {
           "type": "ALIAS",
           "content": {
             "type": "SYMBOL",
@@ -1287,6 +1291,23 @@
         }
       ]
     },
+    "field_import_declaration": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "import"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "function_declaration"
+        },
+        {
+          "type": "STRING",
+          "value": ";"
+        }
+      ]
+    },
     "field_declaration": {
       "type": "SEQ",
       "members": [
@@ -1295,7 +1316,7 @@
           "members": [
             {
               "type": "SYMBOL",
-              "name": "field_type_qualifier"
+              "name": "field_access_specifier"
             },
             {
               "type": "BLANK"
@@ -3121,6 +3142,10 @@
       "_function_type_specifier",
       "_type_specifier",
       "_expression"
+    ],
+    [
+      "field_access_specifier",
+      "function_access_specifier"
     ]
   ],
   "externals": [],

@@ -64,7 +64,8 @@ module.exports = grammar({
     [$._type_specifier, $._declarator],
     [$._type_specifier, $._expression],
     [$._function_type_specifier, $._type_specifier],
-    [$._function_type_specifier, $._type_specifier, $._expression]
+    [$._function_type_specifier, $._type_specifier, $._expression],
+    [$.field_access_specifier, $.function_access_specifier]
   ],
 
   word: $ => $.identifier,
@@ -149,9 +150,9 @@ module.exports = grammar({
     _type_declaration: $ => seq($._type_specifier, $.identifier),
 
     _function_definition_specifiers: $ =>
-      seq(repeat($.access_specifier), $._function_type_specifier),
+      seq(repeat($.function_access_specifier), $._function_type_specifier),
 
-    access_specifier: $ => choice('protected', 'static'),
+    function_access_specifier: $ => choice('protected', 'static'),
 
     _function_type_specifier: $ =>
       choice($.function_type, $.primitive_type, $._type_identifier),
@@ -248,7 +249,7 @@ module.exports = grammar({
 
     compound_statement: $ => seq('{', repeat($._block_level_item), '}'),
 
-    field_type_qualifier: $ => choice('writeprotected', 'protected'),
+    field_access_specifier: $ => choice('writeprotected', 'protected'),
 
     struct_type_qualifier: $ => 'managed',
 
@@ -279,13 +280,16 @@ module.exports = grammar({
     _field_declaration_list_item: $ =>
       choice(
         $.field_declaration,
+        $.field_import_declaration,
         alias($.preproc_ifver_in_field_declaration_list, $.preproc_ifver),
         alias($.preproc_ifdef_in_field_declaration_list, $.preproc_ifdef)
       ),
 
+    field_import_declaration: $ => statement('import', $.function_declaration),
+
     field_declaration: $ =>
       statement(
-        optional($.field_type_qualifier),
+        optional($.field_access_specifier),
         $._declaration_specifiers,
         $._field_declarator
       ),
