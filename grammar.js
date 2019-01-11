@@ -138,8 +138,8 @@ module.exports = grammar({
         commaSep1(choice($._declarator, $.init_declarator))
       ),
 
-    _top_level_declaration: $ => statement($.enum_specifier),
-    // statement(choice($.struct_specifier, $.enum_specifier)),
+    _top_level_declaration: $ =>
+      statement(choice($.struct_declaration, $.enum_specifier)),
 
     export_declaration: $ => statement('export', commaSep1($.identifier)),
 
@@ -259,20 +259,22 @@ module.exports = grammar({
 
     enumerator_list: $ => seq('{', commaSep($.enumerator), optional(','), '}'),
 
-    struct_specifier: $ =>
+    struct_declaration: $ =>
       seq(
         'struct',
         $._type_identifier,
-        optional(seq('extends', $._type_identifier)),
+        optional($.extends_type),
         $.field_declaration_list
       ),
+
+    extends_type: $ => seq('extends', $._type_identifier),
 
     field_declaration_list: $ =>
       seq('{', repeat($._field_declaration_list_item), '}'),
 
     _field_declaration_list_item: $ =>
       choice(
-        $.field_declaration,
+        // $.field_declaration,
         alias($.preproc_ifver_in_field_declaration_list, $.preproc_ifver),
         alias($.preproc_ifdef_in_field_declaration_list, $.preproc_ifdef)
       ),

@@ -382,8 +382,17 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "SYMBOL",
-          "name": "enum_specifier"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "struct_declaration"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "enum_specifier"
+            }
+          ]
         },
         {
           "type": "STRING",
@@ -1174,7 +1183,7 @@
         }
       ]
     },
-    "struct_specifier": {
+    "struct_declaration": {
       "type": "SEQ",
       "members": [
         {
@@ -1189,17 +1198,8 @@
           "type": "CHOICE",
           "members": [
             {
-              "type": "SEQ",
-              "members": [
-                {
-                  "type": "STRING",
-                  "value": "extends"
-                },
-                {
-                  "type": "SYMBOL",
-                  "name": "_type_identifier"
-                }
-              ]
+              "type": "SYMBOL",
+              "name": "extends_type"
             },
             {
               "type": "BLANK"
@@ -1209,6 +1209,19 @@
         {
           "type": "SYMBOL",
           "name": "field_declaration_list"
+        }
+      ]
+    },
+    "extends_type": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "extends"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_type_identifier"
         }
       ]
     },
@@ -1235,10 +1248,6 @@
     "_field_declaration_list_item": {
       "type": "CHOICE",
       "members": [
-        {
-          "type": "SYMBOL",
-          "name": "field_declaration"
-        },
         {
           "type": "ALIAS",
           "content": {

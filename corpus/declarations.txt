@@ -143,3 +143,38 @@ protected int noloopcheck Obj::HelloWorld(const int a, float, char c)
         (compound_statement)
     )
 )
+
+===========================================
+struct
+===========================================
+
+struct Tween {
+
+};
+
+---
+
+(source_file
+    (struct_declaration
+        (type_identifier)
+        (field_declaration_list)
+    )
+)
+
+===========================================
+extended struct
+===========================================
+
+struct Tween extends TweenBase {
+
+};
+
+---
+
+(source_file
+    (struct_declaration
+        (type_identifier)
+        (extends_type (type_identifier))
+        (field_declaration_list)
+    )
+)
