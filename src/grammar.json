@@ -124,17 +124,8 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "STRING",
-              "value": "#error"
-            },
-            {
-              "type": "STRING",
-              "value": "#region"
-            }
-          ]
+          "type": "STRING",
+          "value": "#error"
         },
         {
           "type": "SYMBOL",

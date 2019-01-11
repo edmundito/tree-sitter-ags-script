@@ -104,12 +104,7 @@ module.exports = grammar({
     preproc_def: $ =>
       seq(preprocessor('define'), $.identifier, optional($.preproc_arg), '\n'),
 
-    preproc_error: $ =>
-      seq(
-        choice(preprocessor('error'), preprocessor('region')),
-        $.preproc_arg,
-        '\n'
-      ),
+    preproc_error: $ => seq(preprocessor('error'), $.preproc_arg, '\n'),
 
     // TODO: #region <description> #endregion
 
