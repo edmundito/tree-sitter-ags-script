@@ -18,7 +18,7 @@ const PREC = {
   SUBSCRIPT: 16
 }
 
-const preprocIf = (suffix, content) => ({
+const nestablePreprocessorRules = (suffix, content) => ({
   ['preproc_ifver' + suffix]: $ =>
     seq(
       choice(preprocessor('ifver'), preprocessor('ifnver')),
@@ -33,6 +33,14 @@ const preprocIf = (suffix, content) => ({
       $.identifier,
       repeat(content($)),
       preprocessor('endif')
+    ),
+
+  ['preproc_region' + suffix]: $ =>
+    seq(
+      preprocessor('region'),
+      optional($.preproc_arg),
+      repeat(content($)),
+      preprocessor('endregion')
     )
 })
 
@@ -94,11 +102,11 @@ module.exports = grammar({
         $.declaration,
         $._statement,
         $._empty_declaration,
-        $.preproc_ifver,
-        $.preproc_ifdef,
-        $.preproc_def,
         $.preproc_error,
-        $.preproc_region
+        $.preproc_def,
+        alias($.preproc_ifver_in_block, $.preproc_ifver),
+        alias($.preproc_ifdef_in_block, $.preproc_ifdef),
+        alias($.preproc_region_in_block, $.preproc_region)
       ),
 
     // Preprocessors
@@ -108,16 +116,9 @@ module.exports = grammar({
 
     preproc_error: $ => seq(preprocessor('error'), $.preproc_arg, '\n'),
 
-    preproc_region: $ =>
-      seq(
-        preprocessor('region'),
-        optional($.preproc_arg),
-        repeat($._top_level_item),
-        preprocessor('endregion')
-      ),
-
-    ...preprocIf('', $ => $._top_level_item),
-    ...preprocIf(
+    ...nestablePreprocessorRules('', $ => $._top_level_item),
+    ...nestablePreprocessorRules('_in_block', $ => $._block_level_item),
+    ...nestablePreprocessorRules(
       '_in_field_declaration_list',
       $ => $._field_declaration_list_item
     ),
@@ -285,7 +286,8 @@ module.exports = grammar({
         $.field_declaration,
         $.field_import_declaration,
         alias($.preproc_ifver_in_field_declaration_list, $.preproc_ifver),
-        alias($.preproc_ifdef_in_field_declaration_list, $.preproc_ifdef)
+        alias($.preproc_ifdef_in_field_declaration_list, $.preproc_ifdef),
+        alias($.preproc_region_in_field_declaration_list, $.preproc_region)
       ),
 
     field_import_declaration: $ => statement('import', $.function_declaration),
