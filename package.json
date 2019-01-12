@@ -6,7 +6,7 @@
   "scripts": {
     "generate": "tree-sitter generate",
     "test": "tree-sitter test",
-    "unit": "tree-sitter generate && npm i && tree-sitter test"
+    "build": "tree-sitter generate && npm i && tree-sitter test"
   },
   "author": "",
   "license": "MIT",
