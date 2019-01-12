@@ -122,6 +122,10 @@ module.exports = grammar({
       '_in_field_declaration_list',
       $ => $._field_declaration_list_item
     ),
+    ...nestablePreprocessorRules(
+      '_in_enumerator_list',
+      $ => $._enumerator_list_item
+    ),
 
     preproc_arg: $ => token(prec(0, repeat1(/.|\\\r?\n/))),
 
@@ -266,6 +270,14 @@ module.exports = grammar({
       statement('enum', $._type_identifier, $.enumerator_list),
 
     enumerator_list: $ => seq('{', commaSep($.enumerator), optional(','), '}'),
+
+    _enumerator_list_item: $ =>
+      choice(
+        $.enumerator,
+        alias($.preproc_ifver_in_enumerator_list, $.preproc_ifver),
+        alias($.preproc_ifdef_in_enumerator_list, $.preproc_ifdef),
+        alias($.preproc_region_in_enumerator_list, $.preproc_region)
+      ),
 
     struct_declaration: $ =>
       statement(
