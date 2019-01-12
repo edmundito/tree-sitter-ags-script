@@ -1,4 +1,20 @@
 ===========================================
+declaration
+===========================================
+
+int a;
+int b, c;
+char d = 'd';
+
+---
+
+(source_file
+    (top_level_declaration (primitive_type) (identifier))
+    (top_level_declaration (primitive_type) (identifier) (identifier))
+    (top_level_declaration (primitive_type) (init_literal_declarator (identifier) (char_literal)))
+)
+
+===========================================
 export
 ===========================================
 

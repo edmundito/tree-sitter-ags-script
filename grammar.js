@@ -88,8 +88,7 @@ module.exports = grammar({
         $.export_declaration,
         $.enum_declaration,
         $.struct_declaration,
-        $.declaration,
-        $._empty_declaration,
+        $.top_level_declaration,
         $.preproc_ifver,
         $.preproc_ifdef,
         $.preproc_def,
@@ -101,7 +100,6 @@ module.exports = grammar({
       choice(
         $.declaration,
         $._statement,
-        $._empty_declaration,
         $.preproc_error,
         $.preproc_def,
         alias($.preproc_ifver_in_block, $.preproc_ifver),
@@ -140,6 +138,12 @@ module.exports = grammar({
 
     function_declaration: $ =>
       seq($._function_definition_specifiers, $.function_import_declarator),
+
+    top_level_declaration: $ =>
+      statement(
+        $._declaration_specifiers,
+        commaSep1(choice($._declarator, $.init_literal_declarator))
+      ),
 
     declaration: $ =>
       statement(
@@ -252,8 +256,10 @@ module.exports = grammar({
         seq($._field_identifier, '[', optional(choice($._expression, '*')), ']')
       ),
 
-    init_declarator: $ =>
-      seq($._declarator, '=', choice($.initializer_list, $._expression)),
+    init_declarator: $ => seq($._declarator, '=', $._expression),
+
+    init_literal_declarator: $ =>
+      seq($._pointerless_declarator, '=', $._literal),
 
     compound_statement: $ => seq('{', repeat($._block_level_item), '}'),
 
@@ -503,21 +509,6 @@ module.exports = grammar({
     parenthesized_expression: $ =>
       seq('(', choice($._expression, $.comma_expression), ')'),
 
-    initializer_list: $ =>
-      seq(
-        '{',
-        commaSep(choice($.initializer_pair, $._expression, $.initializer_list)),
-        optional(','),
-        '}'
-      ),
-
-    initializer_pair: $ =>
-      seq(
-        repeat1(choice($.subscript_designator, $.field_designator)),
-        '=',
-        choice($._expression, $.initializer_list)
-      ),
-
     subscript_designator: $ => seq('[', $._expression, ']'),
 
     field_designator: $ => seq('.', $._field_identifier),
@@ -558,14 +549,7 @@ module.exports = grammar({
     null: $ => 'null',
 
     _literal: $ =>
-      choice(
-        $.number_literal,
-        $.string_literal,
-        $.true,
-        $.false,
-        $.null,
-        $.char_literal
-      ),
+      choice($.number_literal, $.true, $.false, $.null, $.char_literal),
 
     version_literal: $ => /\d+(\.\d+)?(\.\d+)?/,
 
