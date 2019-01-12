@@ -85,7 +85,8 @@ module.exports = grammar({
         $.preproc_ifver,
         $.preproc_ifdef,
         $.preproc_def,
-        $.preproc_error
+        $.preproc_error,
+        $.preproc_region
       ),
 
     _block_level_item: $ =>
@@ -96,7 +97,8 @@ module.exports = grammar({
         $.preproc_ifver,
         $.preproc_ifdef,
         $.preproc_def,
-        $.preproc_error
+        $.preproc_error,
+        $.preproc_region
       ),
 
     // Preprocessors
@@ -106,7 +108,13 @@ module.exports = grammar({
 
     preproc_error: $ => seq(preprocessor('error'), $.preproc_arg, '\n'),
 
-    // TODO: #region <description> #endregion
+    preproc_region: $ =>
+      seq(
+        preprocessor('region'),
+        optional($.preproc_arg),
+        repeat($._top_level_item),
+        preprocessor('endregion')
+      ),
 
     ...preprocIf('', $ => $._top_level_item),
     ...preprocIf(
@@ -114,7 +122,7 @@ module.exports = grammar({
       $ => $._field_declaration_list_item
     ),
 
-    preproc_arg: $ => token(prec(-1, repeat1(/.|\\\r?\n/))),
+    preproc_arg: $ => token(prec(0, repeat1(/.|\\\r?\n/))),
 
     // Main Grammar
 

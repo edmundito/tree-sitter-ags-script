@@ -1,0 +1,34 @@
+===========================================
+region
+===========================================
+
+#region some name
+#endregion
+
+---
+
+(source_file
+    (preproc_region
+        (preproc_arg)
+    )
+)
+
+
+===========================================
+region nested
+===========================================
+
+#region some name
+#region
+#endregion
+#endregion
+
+---
+
+(source_file
+    (preproc_region
+        (preproc_arg)
+        (preproc_region)
+    )
+)
+
