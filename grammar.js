@@ -155,7 +155,12 @@ module.exports = grammar({
     // Preprocessors
 
     preproc_def: $ =>
-      seq(preprocessor('define'), $.identifier, optional($._expression), '\n'),
+      seq(
+        preprocessor('define'),
+        $._preproc_identifier,
+        optional($._expression),
+        '\n'
+      ),
 
     preproc_error: $ => seq(preprocessor('error'), $.preproc_arg, '\n'),
 
@@ -290,20 +295,27 @@ module.exports = grammar({
     ),
 
     array_declarator: $ =>
-      prec(
-        1,
-        seq($.identifier, '[', optional(choice($._expression, '*')), ']')
-      ),
+      prec(1, seq($.identifier, '[', optional($._expression), ']')),
+
     array_field_declarator: $ =>
       prec(
         1,
-        seq($._field_identifier, '[', optional(choice($._expression, '*')), ']')
+        seq(
+          $._field_identifier,
+          '[',
+          optional(choice($._preproc_identifier, $.integer_literal)),
+          ']'
+        )
       ),
 
     init_declarator: $ => seq($._declarator, '=', $._expression),
 
     init_literal_declarator: $ =>
-      seq($._pointerless_declarator, '=', $._literal),
+      seq(
+        $._pointerless_declarator,
+        '=',
+        choice($._preproc_identifier, $._literal)
+      ),
 
     compound_statement: $ => seq('{', repeat($._block_level_item), '}'),
 
@@ -476,7 +488,6 @@ module.exports = grammar({
         $.relational_expression,
         $.shift_expression,
         $.math_expression,
-        $.pointer_expression,
         $.subscript_expression,
         $.call_expression,
         $.field_expression,
@@ -511,9 +522,6 @@ module.exports = grammar({
       ),
 
     new_array_declator: $ => seq('[', $._expression, ']'),
-
-    pointer_expression: $ =>
-      choice(prec.left(PREC.UNARY, seq('*', $._expression))),
 
     logical_expression: $ =>
       choice(
@@ -575,7 +583,7 @@ module.exports = grammar({
 
     subscript_designator: $ => seq('[', $._expression, ']'),
 
-    field_designator: $ => seq('.', $._field_identifier),
+    integer_literal: $ => /\d+/,
 
     number_literal: $ => /\d+(\.\d+)?/,
 
@@ -622,6 +630,7 @@ module.exports = grammar({
       prec(1, seq($._type_identifier, '::', $.identifier)),
     _optional_scoped_identifier: $ => choice($.identifier, $.scoped_identifier),
 
+    _preproc_identifier: $ => alias($.identifier, $.preproc_identifier),
     _type_identifier: $ => alias($.identifier, $.type_identifier),
     _field_identifier: $ => alias($.identifier, $.field_identifier),
     _statement_identifier: $ => alias($.identifier, $.statement_identifier),
