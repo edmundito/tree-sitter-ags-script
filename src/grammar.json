@@ -122,7 +122,7 @@
           "members": [
             {
               "type": "SYMBOL",
-              "name": "preproc_arg"
+              "name": "_expression"
             },
             {
               "type": "BLANK"
@@ -1763,12 +1763,34 @@
           "value": "import"
         },
         {
-          "type": "SYMBOL",
-          "name": "function_declaration"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "field_attribute_declaration"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "function_declaration"
+            }
+          ]
         },
         {
           "type": "STRING",
           "value": ";"
+        }
+      ]
+    },
+    "field_attribute_declaration": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "attribute"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "field_declaration"
         }
       ]
     },

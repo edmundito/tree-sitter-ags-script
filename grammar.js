@@ -111,7 +111,7 @@ module.exports = grammar({
     // Preprocessors
 
     preproc_def: $ =>
-      seq(preprocessor('define'), $.identifier, optional($.preproc_arg), '\n'),
+      seq(preprocessor('define'), $.identifier, optional($._expression), '\n'),
 
     preproc_error: $ => seq(preprocessor('error'), $.preproc_arg, '\n'),
 
@@ -307,7 +307,13 @@ module.exports = grammar({
         alias($.preproc_region_in_field_declaration_list, $.preproc_region)
       ),
 
-    field_import_declaration: $ => statement('import', $.function_declaration),
+    field_import_declaration: $ =>
+      statement(
+        'import',
+        choice($.field_attribute_declaration, $.function_declaration)
+      ),
+
+    field_attribute_declaration: $ => seq('attribute', $.field_declaration),
 
     field_declaration: $ =>
       statement(
