@@ -18,7 +18,7 @@ const PREC = {
   SUBSCRIPT: 16
 }
 
-const nestablePreprocessorRules = (suffix, content) => ({
+const preprocessorRules = (suffix, content) => ({
   ['preproc_ifver' + suffix]: $ =>
     seq(
       choice(preprocessor('ifver'), preprocessor('ifnver')),
@@ -114,16 +114,14 @@ module.exports = grammar({
 
     preproc_error: $ => seq(preprocessor('error'), $.preproc_arg, '\n'),
 
-    ...nestablePreprocessorRules('', $ => $._top_level_item),
-    ...nestablePreprocessorRules('_in_block', $ => $._block_level_item),
-    ...nestablePreprocessorRules(
+    ...preprocessorRules('', $ => $._top_level_item),
+    ...preprocessorRules('_in_block', $ => $._block_level_item),
+    ...preprocessorRules(
       '_in_field_declaration_list',
       $ => $._field_declaration_list_item
     ),
-    ...nestablePreprocessorRules(
-      '_in_enumerator_list',
-      $ => $._enumerator_list_item
-    ),
+    ...preprocessorRules('_in_enumerator_list', $ => $._enumerator_list_item),
+    ...preprocessorRules('_by_else_statement', $ => $._else_item),
 
     preproc_arg: $ => token(prec(0, repeat1(/.|\\\r?\n/))),
 
@@ -362,9 +360,24 @@ module.exports = grammar({
           'if',
           $.parenthesized_expression,
           $._statement,
-          optional(seq('else', $._statement))
+          optional($._else_item)
         )
       ),
+
+    _else_item: $ =>
+      choice(
+        seq(
+          choice(
+            alias($.preproc_ifdef_by_else_statement, $.preproc_ifdef),
+            alias($.preproc_ifver_by_else_statement, $.preproc_ifver),
+            alias($.preproc_region_by_else_statement, $.preproc_region)
+          ),
+          $._else_statement
+        ),
+        $._else_statement
+      ),
+
+    _else_statement: $ => seq('else', $._statement),
 
     switch_statement: $ =>
       seq(
