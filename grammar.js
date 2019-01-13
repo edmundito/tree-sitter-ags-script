@@ -564,7 +564,7 @@ module.exports = grammar({
     _literal: $ =>
       choice($.number_literal, $.true, $.false, $.null, $.char_literal),
 
-    version_literal: $ => /\d+(\.\d+)?(\.\d+)?/,
+    version_literal: $ => /\d+(\.\d+){0,3}/,
 
     identifier: $ => /[a-zA-Z_]\w*/,
     scoped_identifier: $ =>
