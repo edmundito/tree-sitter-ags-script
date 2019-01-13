@@ -686,7 +686,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "function_import_declarator"
+          "name": "function_field_declarator"
         },
         {
           "type": "STRING",
@@ -1364,11 +1364,75 @@
         "members": [
           {
             "type": "SYMBOL",
-            "name": "_field_declarator"
+            "name": "_function_field_import_declarator"
           },
           {
             "type": "SYMBOL",
-            "name": "parameter_list"
+            "name": "parameter_import_list"
+          }
+        ]
+      }
+    },
+    "_function_field_import_declarator": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_function_field_import_pointer_declarator"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_function_field_import_pointerless_declarator"
+        }
+      ]
+    },
+    "_function_field_import_pointer_declarator": {
+      "type": "PREC_DYNAMIC",
+      "value": 1,
+      "content": {
+        "type": "PREC_RIGHT",
+        "value": 0,
+        "content": {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "*"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "_function_field_import_pointerless_declarator"
+            }
+          ]
+        }
+      }
+    },
+    "_function_field_import_pointerless_declarator": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_function_field_import_array_declarator"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "_field_identifier"
+        }
+      ]
+    },
+    "_function_field_import_array_declarator": {
+      "type": "PREC",
+      "value": 1,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "[]"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "_field_identifier"
           }
         ]
       }

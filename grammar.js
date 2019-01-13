@@ -141,7 +141,7 @@ module.exports = grammar({
     field_function_declaration: $ =>
       statement(
         $._field_function_declaration_specifiers,
-        $.function_import_declarator
+        $.function_field_declarator
       ),
 
     top_level_declaration: $ =>
@@ -212,7 +212,6 @@ module.exports = grammar({
 
     _pointerless_field_declarator: $ =>
       choice(
-        // alias($.function_field_declarator, $.function_declarator),
         alias($.array_field_declarator, $.array_declarator),
         $._field_identifier
       ),
@@ -259,7 +258,25 @@ module.exports = grammar({
     _function_import_array_declarator: $ => prec(1, seq('[]', $.identifier)),
 
     function_field_declarator: $ =>
-      prec(1, seq($._field_declarator, $.parameter_list)),
+      prec(
+        1,
+        seq($._function_field_import_declarator, $.parameter_import_list)
+      ),
+
+    _function_field_import_declarator: $ =>
+      choice(
+        $._function_field_import_pointer_declarator,
+        $._function_field_import_pointerless_declarator
+      ),
+    _function_field_import_pointer_declarator: $ =>
+      prec.dynamic(
+        1,
+        prec.right(seq('*', $._function_field_import_pointerless_declarator))
+      ),
+    _function_field_import_pointerless_declarator: $ =>
+      choice($._function_field_import_array_declarator, $._field_identifier),
+    _function_field_import_array_declarator: $ =>
+      prec(1, seq('[]', $._field_identifier)),
 
     array_declarator: $ =>
       prec(

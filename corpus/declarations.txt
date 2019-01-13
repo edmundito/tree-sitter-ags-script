@@ -218,14 +218,14 @@ struct MyModule {
             (field_function_declaration
                 (function_access_specifier)
                 (function_type)
-                (function_import_declarator (identifier) (parameter_import_list))
+                (function_field_declarator (field_identifier) (parameter_import_list))
             )
             (field_function_declaration
                 (function_access_specifier)
                 (function_access_specifier)
                 (function_access_specifier)
                 (function_type)
-                (function_import_declarator (identifier) (parameter_import_list))
+                (function_field_declarator (field_identifier) (parameter_import_list))
             )
         )
     )
