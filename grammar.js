@@ -14,6 +14,7 @@ const PREC = {
   CAST: 12,
   UNARY: 13,
   CALL: 14,
+  NEW: 15,
   FIELD: 15,
   SUBSCRIPT: 16
 }
@@ -424,6 +425,7 @@ module.exports = grammar({
     _expression: $ =>
       choice(
         $.assignment_expression,
+        $.new_expression,
         $.logical_expression,
         $.bitwise_expression,
         $.equality_expression,
@@ -457,6 +459,14 @@ module.exports = grammar({
           $._expression
         )
       ),
+
+    new_expression: $ =>
+      prec.right(
+        PREC.NEW,
+        seq('new', $._type_specifier, optional($.new_array_declator))
+      ),
+
+    new_array_declator: $ => seq('[', $._expression, ']'),
 
     pointer_expression: $ =>
       choice(prec.left(PREC.UNARY, seq('*', $._expression))),
