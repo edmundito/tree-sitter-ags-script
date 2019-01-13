@@ -45,6 +45,50 @@ const preprocessorRules = (suffix, content, repeatContent = true) => ({
     )
 })
 
+/**
+ * Generates a function declarator.
+ * A function declarator can be used to declare a function past the type.
+ * It can be used for function definition and import function declaration
+ *
+ * Example:
+ * To generate a declarator with pointer and array return:
+ * *[] GetPointerArrays(int arg1, int arg2)
+ *
+ * functionDeclarator('example', $ => $.identifier, $ => $.parameter_list)
+ * Output Tree: (function_example_declarator "*" "[]" (identifier) (parameter_list))
+ *
+ * @param {string} id Used to identify the declarator
+ * @param {function} getIdentifier function that returns the identifier of the declarator
+ * @param {function} getParameterList function the returns the paramter_list
+ *
+ * @return {object} grammar rules for function declarator
+ */
+const functionDeclaratorRules = (id, getIdentifier, getParameterList) => {
+  const key = suffix => {
+    return 'function_' + (id ? id + '_' : '') + suffix
+  }
+
+  const _key = suffix => '_' + key(suffix)
+
+  const rules = {
+    [key('declarator')]: $ =>
+      prec(1, seq($[_key('declarator')], getParameterList($))),
+
+    [_key('declarator')]: $ =>
+      choice($[_key('pointer_declarator')], $[_key('pointerless_declarator')]),
+
+    [_key('pointer_declarator')]: $ =>
+      prec.dynamic(1, prec.right(seq('*', $[_key('pointerless_declarator')]))),
+
+    [_key('pointerless_declarator')]: $ =>
+      choice($[_key('array_declarator')], getIdentifier($)),
+
+    [_key('array_declarator')]: $ => prec(1, seq('[]', getIdentifier($)))
+  }
+
+  return rules
+}
+
 const preprocessor = command => '#' + command
 
 const commaSep = rule => optional(commaSep1(rule))
@@ -222,61 +266,28 @@ module.exports = grammar({
     pointer_field_declarator: $ =>
       prec.dynamic(1, prec.right(seq('*', $._pointerless_field_declarator))),
 
-    function_declarator: $ =>
-      prec(1, seq($._function_declarator, $.parameter_list)),
-
-    _function_declarator: $ =>
-      choice(
-        $._function_pointer_declarator,
-        $._function_pointerless_declarator
-      ),
-    _function_pointer_declarator: $ =>
-      prec.dynamic(1, prec.right(seq('*', $._function_pointerless_declarator))),
-    _function_pointerless_declarator: $ =>
-      choice($._function_array_declarator, $._function_identifier),
-    _function_array_declarator: $ => prec(1, seq('[]', $._function_identifier)),
     _function_identifier: $ =>
       seq(optional($.function_qualifier), $._optional_scoped_identifier),
 
     function_qualifier: $ => 'noloopcheck',
 
-    function_import_declarator: $ =>
-      prec(1, seq($._function_import_declarator, $.parameter_import_list)),
+    ...functionDeclaratorRules(
+      '',
+      $ => $._function_identifier,
+      $ => $.parameter_list
+    ),
 
-    _function_import_declarator: $ =>
-      choice(
-        $._function_import_pointer_declarator,
-        $._function_import_pointerless_declarator
-      ),
-    _function_import_pointer_declarator: $ =>
-      prec.dynamic(
-        1,
-        prec.right(seq('*', $._function_import_pointerless_declarator))
-      ),
-    _function_import_pointerless_declarator: $ =>
-      choice($._function_import_array_declarator, $.identifier),
-    _function_import_array_declarator: $ => prec(1, seq('[]', $.identifier)),
+    ...functionDeclaratorRules(
+      'import',
+      $ => $.identifier,
+      $ => $.parameter_import_list
+    ),
 
-    function_field_declarator: $ =>
-      prec(
-        1,
-        seq($._function_field_import_declarator, $.parameter_import_list)
-      ),
-
-    _function_field_import_declarator: $ =>
-      choice(
-        $._function_field_import_pointer_declarator,
-        $._function_field_import_pointerless_declarator
-      ),
-    _function_field_import_pointer_declarator: $ =>
-      prec.dynamic(
-        1,
-        prec.right(seq('*', $._function_field_import_pointerless_declarator))
-      ),
-    _function_field_import_pointerless_declarator: $ =>
-      choice($._function_field_import_array_declarator, $._field_identifier),
-    _function_field_import_array_declarator: $ =>
-      prec(1, seq('[]', $._field_identifier)),
+    ...functionDeclaratorRules(
+      'field',
+      $ => $._field_identifier,
+      $ => $.parameter_import_list
+    ),
 
     array_declarator: $ =>
       prec(
