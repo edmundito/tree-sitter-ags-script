@@ -18,12 +18,12 @@ const PREC = {
   SUBSCRIPT: 16
 }
 
-const preprocessorRules = (suffix, content) => ({
+const preprocessorRules = (suffix, content, repeatContent = true) => ({
   ['preproc_ifver' + suffix]: $ =>
     seq(
       choice(preprocessor('ifver'), preprocessor('ifnver')),
       $.version_literal,
-      repeat(content($)),
+      repeatContent ? repeat(content($)) : content($),
       preprocessor('endif')
     ),
 
@@ -31,7 +31,7 @@ const preprocessorRules = (suffix, content) => ({
     seq(
       choice(preprocessor('ifdef'), preprocessor('ifndef')),
       $.identifier,
-      repeat(content($)),
+      repeatContent ? repeat(content($)) : content($),
       preprocessor('endif')
     ),
 
@@ -39,7 +39,7 @@ const preprocessorRules = (suffix, content) => ({
     seq(
       preprocessor('region'),
       optional($.preproc_arg),
-      repeat(content($)),
+      repeatContent ? repeat(content($)) : content($),
       preprocessor('endregion')
     )
 })
@@ -121,7 +121,7 @@ module.exports = grammar({
       $ => $._field_declaration_list_item
     ),
     ...preprocessorRules('_in_enumerator_list', $ => $._enumerator_list_item),
-    ...preprocessorRules('_by_else_statement', $ => $._else_item),
+    ...preprocessorRules('_with_else', $ => $._else_item, false),
 
     preproc_arg: $ => token(prec(0, repeat1(/.|\\\r?\n/))),
 
@@ -360,24 +360,21 @@ module.exports = grammar({
           'if',
           $.parenthesized_expression,
           $._statement,
-          optional($._else_item)
+          repeat($._else_preproc_item),
+          optional($.else_statement)
         )
       ),
 
-    _else_item: $ =>
+    _else_preproc_item: $ =>
       choice(
-        seq(
-          choice(
-            alias($.preproc_ifdef_by_else_statement, $.preproc_ifdef),
-            alias($.preproc_ifver_by_else_statement, $.preproc_ifver),
-            alias($.preproc_region_by_else_statement, $.preproc_region)
-          ),
-          $._else_statement
-        ),
-        $._else_statement
+        alias($.preproc_ifdef_with_else, $.preproc_ifdef),
+        alias($.preproc_ifver_with_else, $.preproc_ifver),
+        alias($.preproc_region_with_else, $.preproc_region)
       ),
 
-    _else_statement: $ => seq('else', $._statement),
+    _else_item: $ => choice(repeat1($._else_preproc_item), $.else_statement),
+
+    else_statement: $ => seq('else', $._statement),
 
     switch_statement: $ =>
       seq(
