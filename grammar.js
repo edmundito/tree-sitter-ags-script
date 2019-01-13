@@ -74,7 +74,7 @@ module.exports = grammar({
     [$._type_specifier, $._expression],
     [$._function_type_specifier, $._type_specifier],
     [$._function_type_specifier, $._type_specifier, $._expression],
-    [$.field_access_specifier, $.function_access_specifier]
+    [$.field_access_specifier, $.field_function_access_specifier]
   ],
 
   word: $ => $.identifier,
@@ -138,6 +138,12 @@ module.exports = grammar({
     function_declaration: $ =>
       seq($._function_definition_specifiers, $.function_import_declarator),
 
+    field_function_declaration: $ =>
+      statement(
+        $._field_function_declaration_specifiers,
+        $.function_import_declarator
+      ),
+
     top_level_declaration: $ =>
       statement(
         $._declaration_specifiers,
@@ -162,6 +168,17 @@ module.exports = grammar({
 
     _function_definition_specifiers: $ =>
       seq(repeat($.function_access_specifier), $._function_type_specifier),
+
+    _field_function_declaration_specifiers: $ =>
+      seq(
+        repeat(
+          alias($.field_function_access_specifier, $.function_access_specifier)
+        ),
+        $._function_type_specifier
+      ),
+
+    field_function_access_specifier: $ =>
+      choice('import', 'protected', 'static'),
 
     function_access_specifier: $ => choice('protected', 'static'),
 
@@ -262,7 +279,8 @@ module.exports = grammar({
 
     compound_statement: $ => seq('{', repeat($._block_level_item), '}'),
 
-    field_access_specifier: $ => choice('writeprotected', 'protected'),
+    field_access_specifier: $ =>
+      choice('import', 'attribute', 'writeprotected', 'protected'),
 
     struct_type_qualifier: $ => 'managed',
 
@@ -301,23 +319,15 @@ module.exports = grammar({
     _field_declaration_list_item: $ =>
       choice(
         $.field_declaration,
-        $.field_import_declaration,
+        $.field_function_declaration,
         alias($.preproc_ifver_in_field_declaration_list, $.preproc_ifver),
         alias($.preproc_ifdef_in_field_declaration_list, $.preproc_ifdef),
         alias($.preproc_region_in_field_declaration_list, $.preproc_region)
       ),
 
-    field_import_declaration: $ =>
-      statement(
-        'import',
-        choice($.field_attribute_declaration, $.function_declaration)
-      ),
-
-    field_attribute_declaration: $ => seq('attribute', $.field_declaration),
-
     field_declaration: $ =>
       statement(
-        optional($.field_access_specifier),
+        repeat($.field_access_specifier),
         $._declaration_specifiers,
         $._field_declarator
       ),

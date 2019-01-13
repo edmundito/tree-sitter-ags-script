@@ -215,15 +215,17 @@ struct MyModule {
     (struct_declaration
         (type_identifier)
         (field_declaration_list
-            (field_import_declaration
-                (function_declaration (function_type)
-                    (function_import_declarator (identifier) (parameter_import_list))
-                )
+            (field_function_declaration
+                (function_access_specifier)
+                (function_type)
+                (function_import_declarator (identifier) (parameter_import_list))
             )
-            (field_import_declaration
-                (function_declaration (function_access_specifier) (function_access_specifier) (function_type)
-                    (function_import_declarator (identifier) (parameter_import_list))
-                )
+            (field_function_declaration
+                (function_access_specifier)
+                (function_access_specifier)
+                (function_access_specifier)
+                (function_type)
+                (function_import_declarator (identifier) (parameter_import_list))
             )
         )
     )
