@@ -471,7 +471,7 @@ module.exports = grammar({
       seq('while', $.parenthesized_expression, $._statement),
 
     do_statement: $ =>
-      seq('do', $._statement, 'while', $.parenthesized_expression),
+      statement('do', $._statement, 'while', $.parenthesized_expression),
 
     for_statement: $ =>
       seq(

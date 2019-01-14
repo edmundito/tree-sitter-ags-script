@@ -86,6 +86,29 @@ int main() {
           (argument_list (string_literal))))))))
 
 ============================================
+do loops
+============================================
+
+int main() {
+  do {
+    printf("hi");
+  } while (x);
+}
+
+---
+
+(script
+  (function_definition
+    (primitive_type)
+    (function_declarator (identifier) (parameter_list))
+    (compound_statement
+      (do_statement
+        (compound_statement
+          (expression_statement
+            (call_expression (identifier) (argument_list (string_literal)))))
+        (parenthesized_expression (identifier))))))
+
+============================================
 Switch statements
 ============================================
 

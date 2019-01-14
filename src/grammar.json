@@ -2523,6 +2523,10 @@
         {
           "type": "SYMBOL",
           "name": "parenthesized_expression"
+        },
+        {
+          "type": "STRING",
+          "value": ";"
         }
       ]
     },
