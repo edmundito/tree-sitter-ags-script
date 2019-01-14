@@ -95,10 +95,15 @@ const commaSep = rule => optional(commaSep1(rule))
 
 const commaSep1 = rule => seq(rule, repeat(seq(',', rule)))
 
+const commapSepLeading = (firstRule, repeatRule) =>
+  choice(seq(firstRule, repeat(seq(',', repeatRule))), commaSep(repeatRule))
+
 const commaSepTrailing = (recurSymbol, rule) =>
   choice(rule, seq(recurSymbol, ',', rule))
 
 const statement = (...args) => seq(...args, ';')
+
+const parenthesis = (...args) => seq('(', ...args, ')')
 
 module.exports = grammar({
   name: 'ags_script',
@@ -294,7 +299,7 @@ module.exports = grammar({
     ...functionDeclaratorRules(
       'field',
       $ => $._field_identifier,
-      $ => $.parameter_import_list
+      $ => $.parameter_field_list
     ),
 
     array_declarator: $ =>
@@ -378,7 +383,12 @@ module.exports = grammar({
     enumerator: $ =>
       seq($.identifier, optional(seq('=', choice($.identifier, $._literal)))),
 
-    parameter_list: $ => seq('(', commaSep($.parameter_declaration), ')'),
+    extender_parameter: $ => seq('this', $._type_identifier, '*'),
+
+    parameter_list: $ =>
+      parenthesis(
+        commapSepLeading($.extender_parameter, $.parameter_declaration)
+      ),
 
     parameter_declaration: $ =>
       seq(
@@ -386,8 +396,13 @@ module.exports = grammar({
         optional($._parameter_declarator)
       ),
 
+    parameter_field_list: $ =>
+      parenthesis(commaSep($.parameter_import_declaration)),
+
     parameter_import_list: $ =>
-      seq('(', commaSep($.parameter_import_declaration), ')'),
+      parenthesis(
+        commapSepLeading($.extender_parameter, $.parameter_import_declaration)
+      ),
 
     parameter_import_declaration: $ =>
       seq(
