@@ -77,12 +77,10 @@ import function HelloWorld();
 
 (script
     (import_declaration
-        (function_declaration
-            (function_type)
-            (function_import_declarator
-                (identifier)
-                (parameter_import_list)
-            )
+        (function_type)
+        (function_import_declarator
+            (identifier)
+            (parameter_import_list)
         )
     )
 )
@@ -97,16 +95,14 @@ import protected int HelloWorld(const int a, float, char c = 'c');
 
 (script
     (import_declaration
-        (function_declaration
-            (function_access_specifier)
-            (primitive_type)
-            (function_import_declarator
-                (identifier)
-                (parameter_import_list
-                    (parameter_import_declaration (parameter_type_qualifier) (primitive_type) (enumerator (identifier)))
-                    (parameter_import_declaration (primitive_type))
-                    (parameter_import_declaration (primitive_type) (enumerator (identifier) (char_literal)))
-                )
+        (function_access_specifier)
+        (primitive_type)
+        (function_import_declarator
+            (identifier)
+            (parameter_import_list
+                (parameter_import_declaration (parameter_type_qualifier) (primitive_type) (identifier))
+                (parameter_import_declaration (primitive_type))
+                (parameter_import_declaration (primitive_type) (init_literal_declarator (identifier) (char_literal)))
             )
         )
     )

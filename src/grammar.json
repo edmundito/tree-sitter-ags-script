@@ -664,7 +664,7 @@
         }
       ]
     },
-    "function_declaration": {
+    "_function_declaration": {
       "type": "SEQ",
       "members": [
         {
@@ -878,7 +878,7 @@
           "members": [
             {
               "type": "SYMBOL",
-              "name": "function_declaration"
+              "name": "_function_declaration"
             },
             {
               "type": "SYMBOL",
@@ -1107,8 +1107,17 @@
           "name": "array_declarator"
         },
         {
-          "type": "SYMBOL",
-          "name": "enumerator"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "identifier"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "init_literal_declarator"
+            }
+          ]
         }
       ]
     },
@@ -1566,7 +1575,7 @@
           "members": [
             {
               "type": "SYMBOL",
-              "name": "_preproc_identifier"
+              "name": "identifier"
             },
             {
               "type": "SYMBOL",

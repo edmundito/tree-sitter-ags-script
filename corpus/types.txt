@@ -1,0 +1,69 @@
+========================================
+Primitive types
+========================================
+
+bool b;
+char c;
+float f;
+int i;
+long l;
+short s;
+string str;
+
+---
+
+(script
+  (top_level_declaration (primitive_type) (identifier))
+  (top_level_declaration (primitive_type) (identifier))
+  (top_level_declaration (primitive_type) (identifier))
+  (top_level_declaration (primitive_type) (identifier))
+  (top_level_declaration (primitive_type) (identifier))
+  (top_level_declaration (primitive_type) (identifier))
+  (top_level_declaration (primitive_type) (identifier))
+)
+
+========================================
+Type modifiers
+========================================
+
+readonly int ri;
+
+import void f(const int);
+
+import void f(const int i);
+
+void f(const int) {}
+
+void f(const int i) {
+  readonly int lri;
+}
+
+---
+
+(script
+  (top_level_declaration
+    (type_qualifier) (primitive_type) (identifier))
+  (import_declaration
+    (function_type)
+    (function_import_declarator
+      (identifier)
+      (parameter_import_list (parameter_import_declaration (parameter_type_qualifier) (primitive_type)))))
+  (import_declaration
+    (function_type)
+    (function_import_declarator
+      (identifier)
+      (parameter_import_list (parameter_import_declaration (parameter_type_qualifier) (primitive_type) (identifier)))))
+  (function_definition
+    (function_type)
+    (function_declarator
+      (identifier)
+      (parameter_list (parameter_declaration (parameter_type_qualifier) (primitive_type))))
+    (compound_statement))
+  (function_definition
+    (function_type)
+    (function_declarator
+      (identifier)
+      (parameter_list (parameter_declaration (parameter_type_qualifier) (primitive_type) (identifier))))
+    (compound_statement
+      (declaration (type_qualifier) (primitive_type) (identifier)))))
+  

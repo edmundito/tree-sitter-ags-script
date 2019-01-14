@@ -189,7 +189,7 @@ module.exports = grammar({
         $.compound_statement
       ),
 
-    function_declaration: $ =>
+    _function_declaration: $ =>
       seq($._function_definition_specifiers, $.function_import_declarator),
 
     field_function_declaration: $ =>
@@ -216,7 +216,7 @@ module.exports = grammar({
     export_declaration: $ => statement('export', commaSep1($.identifier)),
 
     import_declaration: $ =>
-      statement('import', choice($.function_declaration, $._type_declaration)),
+      statement('import', choice($._function_declaration, $._type_declaration)),
 
     _type_declaration: $ => seq($._type_specifier, $.identifier),
 
@@ -259,7 +259,11 @@ module.exports = grammar({
       choice($.pointer_declarator, $.array_declarator, $.identifier),
 
     _parameter_import_declarator: $ =>
-      choice($.pointer_declarator, $.array_declarator, $.enumerator),
+      choice(
+        $.pointer_declarator,
+        $.array_declarator,
+        choice($.identifier, $.init_literal_declarator)
+      ),
 
     _field_declarator: $ =>
       choice(
@@ -319,11 +323,7 @@ module.exports = grammar({
     init_declarator: $ => seq($._declarator, '=', $._expression),
 
     init_literal_declarator: $ =>
-      seq(
-        $._pointerless_declarator,
-        '=',
-        choice($._preproc_identifier, $._literal)
-      ),
+      seq($._pointerless_declarator, '=', choice($.identifier, $._literal)),
 
     compound_statement: $ => seq('{', repeat($._block_level_item), '}'),
 
