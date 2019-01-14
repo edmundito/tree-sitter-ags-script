@@ -596,7 +596,7 @@ module.exports = grammar({
       seq(
         '"',
         repeat(
-          choice(token.immediate(prec(1, /[^\\"\n]+/)), $.escape_sequence)
+          choice(token.immediate(prec(1, /[^%\[\\"\n]+/)), $.escape_sequence)
         ),
         '"'
       ),
@@ -604,15 +604,10 @@ module.exports = grammar({
     //FIXME: Replace with AGS String formatting
     escape_sequence: $ =>
       token.immediate(
-        seq(
-          '%',
-          choice(
-            /[^xuU]/,
-            /\d{2,3}/,
-            /x[0-9a-fA-F]{2,}/,
-            /u[0-9a-fA-F]{4}/,
-            /U[0-9a-fA-F]{8}/
-          )
+        choice(
+          seq('\\', choice('[', '\\', 'n', 'r', "'", '"', '%')),
+          '[',
+          seq('%', choice(/(0[0-9]+)?d/, 'c', 's', '%', /(.[0-9]+)?f/))
         )
       ),
 
