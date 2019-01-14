@@ -103,7 +103,7 @@ import protected int HelloWorld(const int a, float, char c = 'c');
             (function_import_declarator
                 (identifier)
                 (parameter_import_list
-                    (parameter_import_declaration (type_qualifier) (primitive_type) (enumerator (identifier)))
+                    (parameter_import_declaration (parameter_type_qualifier) (primitive_type) (enumerator (identifier)))
                     (parameter_import_declaration (primitive_type))
                     (parameter_import_declaration (primitive_type) (enumerator (identifier) (char_literal)))
                 )
@@ -151,7 +151,7 @@ protected int noloopcheck Obj::HelloWorld(const int a, float, char c)
             (function_qualifier)
             (scoped_identifier (type_identifier) (identifier))
             (parameter_list
-                (parameter_declaration (type_qualifier) (primitive_type) (identifier))
+                (parameter_declaration (parameter_type_qualifier) (primitive_type) (identifier))
                 (parameter_declaration (primitive_type))
                 (parameter_declaration (primitive_type) (identifier))
             )

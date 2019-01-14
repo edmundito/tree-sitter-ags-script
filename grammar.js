@@ -236,12 +236,15 @@ module.exports = grammar({
 
     function_type: $ => choice('function', 'void'),
 
-    _declaration_specifiers: $ => $._type_specifier,
-
-    _parameter_declaration_specifiers: $ =>
+    _declaration_specifiers: $ =>
       seq(optional($.type_qualifier), $._type_specifier),
 
-    type_qualifier: $ => 'const',
+    _parameter_declaration_specifiers: $ =>
+      seq(optional($.parameter_type_qualifier), $._type_specifier),
+
+    parameter_type_qualifier: $ => 'const',
+
+    type_qualifier: $ => 'readonly',
 
     _declarator: $ => choice($.pointer_declarator, $._pointerless_declarator),
 
@@ -368,7 +371,7 @@ module.exports = grammar({
     field_declaration: $ =>
       statement(
         repeat($.field_access_specifier),
-        $._declaration_specifiers,
+        $._type_specifier,
         $._field_declarator
       ),
 
@@ -581,8 +584,6 @@ module.exports = grammar({
     parenthesized_expression: $ =>
       seq('(', choice($._expression, $.comma_expression), ')'),
 
-    subscript_designator: $ => seq('[', $._expression, ']'),
-
     integer_literal: $ => /\d+/,
 
     number_literal: $ => /\d+(\.\d+)?/,
@@ -629,8 +630,6 @@ module.exports = grammar({
     _type_identifier: $ => alias($.identifier, $.type_identifier),
     _field_identifier: $ => alias($.identifier, $.field_identifier),
     _statement_identifier: $ => alias($.identifier, $.statement_identifier),
-
-    _empty_declaration: $ => statement($._declaration_specifiers),
 
     // http://stackoverflow.com/questions/13014947/regex-to-match-a-c-style-multiline-comment/36328890#36328890
     comment: $ =>
