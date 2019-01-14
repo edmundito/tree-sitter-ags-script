@@ -7,7 +7,7 @@ region
 
 ---
 
-(source_file
+(script
     (preproc_region
         (preproc_arg)
     )
@@ -25,7 +25,7 @@ region nested
 
 ---
 
-(source_file
+(script
     (preproc_region
         (preproc_arg)
         (preproc_region)

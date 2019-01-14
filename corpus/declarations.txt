@@ -8,7 +8,7 @@ char d = 'd';
 
 ---
 
-(source_file
+(script
     (top_level_declaration (primitive_type) (identifier))
     (top_level_declaration (primitive_type) (identifier) (identifier))
     (top_level_declaration (primitive_type) (init_literal_declarator (identifier) (char_literal)))
@@ -22,7 +22,7 @@ export a, B, c1, _d;
 
 ---
 
-(source_file
+(script
     (export_declaration
         (identifier)
         (identifier)
@@ -49,7 +49,7 @@ enum CharacterDirection {
 
 ---
 
-(source_file
+(script
     (enum_declaration
         (type_identifier)
         (enumerator_list
@@ -75,7 +75,7 @@ import function HelloWorld();
 
 ---
 
-(source_file
+(script
     (import_declaration
         (function_declaration
             (function_type)
@@ -95,7 +95,7 @@ import protected int HelloWorld(const int a, float, char c = 'c');
 
 ---
 
-(source_file
+(script
     (import_declaration
         (function_declaration
             (function_access_specifier)
@@ -122,7 +122,7 @@ function HelloWorld()
 
 ---
 
-(source_file
+(script
     (function_definition
         (function_type)
         (function_declarator
@@ -143,7 +143,7 @@ protected int noloopcheck Obj::HelloWorld(const int a, float, char c)
 
 ---
 
-(source_file
+(script
     (function_definition
         (function_access_specifier)
         (primitive_type)
@@ -170,7 +170,7 @@ struct MyModule {
 
 ---
 
-(source_file
+(script
     (struct_declaration
         (type_identifier)
         (field_declaration_list)
@@ -189,7 +189,7 @@ struct MyModule {
 
 ---
 
-(source_file
+(script
     (struct_declaration
         (type_identifier)
         (field_declaration_list
@@ -211,7 +211,7 @@ struct MyModule {
 
 ---
 
-(source_file
+(script
     (struct_declaration
         (type_identifier)
         (field_declaration_list
@@ -241,7 +241,7 @@ struct MyModule extends MyModuleBase {
 
 ---
 
-(source_file
+(script
     (struct_declaration
         (type_identifier)
         (extends_type (type_identifier))
@@ -258,7 +258,7 @@ managed struct MyModule {
 
 ---
 
-(source_file
+(script
     (struct_declaration
         (struct_type_qualifier)
         (type_identifier)

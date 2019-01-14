@@ -129,7 +129,7 @@ module.exports = grammar({
   word: $ => $.identifier,
 
   rules: {
-    source_file: $ => repeat($._top_level_item),
+    script: $ => repeat($._top_level_item),
 
     _top_level_item: $ =>
       choice(
@@ -436,7 +436,7 @@ module.exports = grammar({
           $.parenthesized_expression,
           $._statement,
           repeat($._else_preproc_item),
-          optional($.else_statement)
+          optional($._else_statement)
         )
       ),
 
@@ -447,9 +447,9 @@ module.exports = grammar({
         alias($.preproc_region_with_else, $.preproc_region)
       ),
 
-    _else_item: $ => choice(repeat1($._else_preproc_item), $.else_statement),
+    _else_item: $ => choice(repeat1($._else_preproc_item), $._else_statement),
 
-    else_statement: $ => seq('else', $._statement),
+    _else_statement: $ => seq('else', $._statement),
 
     switch_statement: $ =>
       seq(

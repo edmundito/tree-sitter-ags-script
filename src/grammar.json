@@ -2,7 +2,7 @@
   "name": "ags_script",
   "word": "identifier",
   "rules": {
-    "source_file": {
+    "script": {
       "type": "REPEAT",
       "content": {
         "type": "SYMBOL",
@@ -2328,7 +2328,7 @@
             "members": [
               {
                 "type": "SYMBOL",
-                "name": "else_statement"
+                "name": "_else_statement"
               },
               {
                 "type": "BLANK"
@@ -2382,11 +2382,11 @@
         },
         {
           "type": "SYMBOL",
-          "name": "else_statement"
+          "name": "_else_statement"
         }
       ]
     },
-    "else_statement": {
+    "_else_statement": {
       "type": "SEQ",
       "members": [
         {

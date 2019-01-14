@@ -1,0 +1,152 @@
+============================================
+If statements
+============================================
+
+int main() {
+  if (a)
+    1;
+
+  if (!a) {
+    2;
+  } else {
+    3;
+  }
+}
+
+---
+
+(script
+  (function_definition
+    (primitive_type)
+    (function_declarator (identifier) (parameter_list))
+    (compound_statement
+      (if_statement (parenthesized_expression (identifier))
+        (expression_statement (number_literal)))
+      (if_statement (parenthesized_expression (logical_expression (identifier)))
+        (compound_statement
+          (expression_statement (number_literal)))
+        (compound_statement
+          (expression_statement (number_literal)))))))
+
+============================================
+For loops
+============================================
+
+int main() {
+  for (;;)
+    1;
+
+  for (int i = 0; i < 5; next(), i++) {
+    2;
+  }
+
+  for (start(); check(); step())
+    3;
+}
+
+---
+
+(script
+  (function_definition
+    (primitive_type)
+    (function_declarator (identifier) (parameter_list))
+    (compound_statement
+      (for_statement
+        (expression_statement (number_literal)))
+      (for_statement
+        (declaration (primitive_type) (init_declarator (identifier) (number_literal)))
+        (relational_expression (identifier) (number_literal))
+        (call_expression (identifier) (argument_list))
+        (math_expression (identifier))
+        (compound_statement (expression_statement (number_literal))))
+      (for_statement
+        (call_expression (identifier) (argument_list))
+        (call_expression (identifier) (argument_list))
+        (call_expression (identifier) (argument_list))
+        (expression_statement (number_literal))))))
+
+============================================
+While loops
+============================================
+
+int main() {
+  while (x)
+    printf("hi");
+}
+
+---
+
+(script
+  (function_definition
+    (primitive_type)
+    (function_declarator (identifier) (parameter_list))
+    (compound_statement
+      (while_statement (parenthesized_expression (identifier))
+        (expression_statement (call_expression
+          (identifier)
+          (argument_list (string_literal))))))))
+
+============================================
+Switch statements
+============================================
+
+void foo(int a) {
+  switch (a) {
+    puts("entered switch!");
+
+    case 3:
+    case 5:
+      if (b) {
+        c();
+      }
+      break;
+
+    default:
+      c();
+      break;
+  }
+}
+
+---
+
+(script
+  (function_definition
+    (function_type)
+    (function_declarator (identifier) (parameter_list
+      (parameter_declaration (primitive_type) (identifier))))
+    (compound_statement
+      (switch_statement
+        (parenthesized_expression (identifier))
+        (compound_statement
+          (expression_statement (call_expression (identifier) (argument_list (string_literal))))
+          (case_statement (number_literal))
+          (case_statement (number_literal)
+            (if_statement
+              (parenthesized_expression (identifier))
+              (compound_statement (expression_statement (call_expression (identifier) (argument_list)))))
+            (break_statement))
+          (case_statement
+            (expression_statement (call_expression (identifier) (argument_list)))
+            (break_statement)))))))
+
+============================================
+Comments with asterisks
+============================================
+
+/*************************
+ * odd number of asterisks
+ *************************/
+int a;
+
+/**************************
+ * even number of asterisks
+ **************************/
+int b;
+
+---
+
+(script
+  (comment)
+  (top_level_declaration (primitive_type) (identifier))
+  (comment)
+  (top_level_declaration (primitive_type) (identifier)))
