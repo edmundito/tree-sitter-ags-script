@@ -5,18 +5,8 @@ region
 #region some name
 #endregion
 
----
-
-(script
-    (preproc_region
-        (preproc_arg)
-    )
-)
-
-
-===========================================
-region nested
-===========================================
+#region
+#endregion
 
 #region some name
 #region
@@ -26,9 +16,157 @@ region nested
 ---
 
 (script
-    (preproc_region
-        (preproc_arg)
-        (preproc_region)
-    )
-)
+  (preproc_region
+    (preproc_arg))
+  (preproc_region)
+  (preproc_region
+    (preproc_arg)
+    (preproc_region)))
+
+===========================================
+region in function
+===========================================
+
+void game_start() {
+  #region some name
+  #endregion
+
+  #region
+  #endregion
+
+  #region some name
+  #region
+  #endregion
+  #endregion
+}
+
+---
+
+(script
+  (function_definition
+    (function_type)
+    (function_declarator
+      (identifier)
+      (parameter_list))
+    (compound_statement
+      (preproc_region (preproc_arg))
+      (preproc_region)
+        (preproc_region
+          (preproc_arg)
+            (preproc_region)))))
+
+============================================
+Object-like macro definitions
+============================================
+
+#define ONE
+#define TWO int a = b;
+
+---
+
+(script
+  (preproc_def (preproc_identifier))
+  (preproc_def (preproc_identifier) (preproc_arg)))
+
+============================================
+Ifdefs
+============================================
+
+#ifndef DEFINE1
+int j;
+#endif
+
+#ifdef DEFINE2
+float b;
+#define c 32
+#endif
+
+#ifdef DEFINE2
+  #ifdef DEFINE3
+  #endif
+#endif
+
+---
+
+(script
+  (preproc_ifdef
+    (identifier)
+    (top_level_declaration (primitive_type) (identifier)))
+
+  (preproc_ifdef
+    (identifier)
+    (top_level_declaration (primitive_type) (identifier))
+    (preproc_def (preproc_identifier) (preproc_arg)))
+
+  (preproc_ifdef
+    (identifier)
+      (preproc_ifdef
+        (identifier))))
+
+============================================
+Preprocessor conditionals in functions
+============================================
+
+int main() {
+  #ifdef d
+    puts("1");
+  #endif
+
+  #ifver 3.4.0
+    puts("1");
+  #endif
+
+  #ifdef a
+    #ifver 3.4.0
+      return 0;
+    #endif
+    #ifdef b
+      return 1;
+    #endif
+  #endif
+}
+
+---
+
+(script
+  (function_definition
+    (primitive_type)
+    (function_declarator (identifier) (parameter_list))
+    (compound_statement
+      (preproc_ifdef
+        (identifier)
+        (expression_statement (call_expression (identifier) (argument_list (string_literal)))))
+      (preproc_ifver
+        (version_literal)
+        (expression_statement (call_expression (identifier) (argument_list (string_literal)))))
+      (preproc_ifdef (identifier)
+        (preproc_ifver
+          (version_literal)
+          (return_statement (number_literal)))
+        (preproc_ifdef
+          (identifier)
+          (return_statement (number_literal)))))))
+
+=================================================
+Preprocessor conditionals in struct bodies
+=================================================
+
+struct S {
+#ifdef BITS
+  long f2;
+#endif
+#ifver 3.4.0
+  int f2;
+#endif
+};
+
+---
+
+(script
+  (struct_declaration (type_identifier) (field_declaration_list
+    (preproc_ifdef (identifier)
+      (field_declaration (primitive_type) (field_identifier)))
+    (preproc_ifver (version_literal)
+      (field_declaration (primitive_type) (field_identifier))))))
+
 
