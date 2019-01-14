@@ -210,9 +210,6 @@ module.exports = grammar({
         commaSep1(choice($._declarator, $.init_declarator))
       ),
 
-    _top_level_declaration: $ =>
-      statement(choice($.struct_declaration, $.enum_declaration)),
-
     export_declaration: $ => statement('export', commaSep1($.identifier)),
 
     import_declaration: $ =>
@@ -427,7 +424,7 @@ module.exports = grammar({
       ),
 
     expression_statement: $ =>
-      statement(optional(choice($._expression, $.comma_expression))),
+      statement(optional(choice($.call_expression, $.assignment_expression))),
 
     if_statement: $ =>
       prec.right(
@@ -483,7 +480,7 @@ module.exports = grammar({
         choice($.declaration, statement(optional($._expression))),
         optional($._expression),
         ';',
-        commaSep($._expression),
+        optional($.assignment_expression),
         ')',
         $._statement
       ),
@@ -498,8 +495,6 @@ module.exports = grammar({
 
     _expression: $ =>
       choice(
-        $.assignment_expression,
-        $.new_expression,
         $.logical_expression,
         $.bitwise_expression,
         $.equality_expression,
@@ -520,6 +515,9 @@ module.exports = grammar({
         $.parenthesized_expression
       ),
 
+    _identifier_expression: $ =>
+      choice($.field_expression, $.subscript_expression, $.identifier),
+
     comma_expression: $ =>
       seq($._expression, ',', choice($._expression, $.comma_expression)),
 
@@ -527,9 +525,15 @@ module.exports = grammar({
       prec.right(
         PREC.ASSIGNMENT,
         seq(
-          $._expression,
-          choice('=', '*=', '/=', '+=', '-=', '<<=', '>>=', '&=', '^=', '|='),
-          $._expression
+          $._identifier_expression,
+          choice(
+            seq('=', choice($._expression, $.new_expression)),
+            choice('--', '++'),
+            seq(
+              choice('*=', '/=', '+=', '-=', '<<=', '>>=', '&=', '^=', '|='),
+              $._expression
+            )
+          )
         )
       ),
 
@@ -581,20 +585,25 @@ module.exports = grammar({
         prec.left(PREC.MULTIPLY, seq($._expression, '/', $._expression)),
         prec.left(PREC.MULTIPLY, seq($._expression, '%', $._expression)),
         prec.right(PREC.UNARY, seq('-', $._expression)),
-        prec.right(PREC.UNARY, seq('+', $._expression)),
-        prec.right(PREC.UNARY, seq(choice('--', '++'), $._expression)),
-        prec.right(PREC.UNARY, seq($._expression, choice('++', '--')))
+        prec.right(PREC.UNARY, seq('+', $._expression))
       ),
 
     subscript_expression: $ =>
-      prec(PREC.SUBSCRIPT, seq($._expression, '[', $._expression, ']')),
+      prec(
+        PREC.SUBSCRIPT,
+        seq($._identifier_expression, '[', $._expression, ']')
+      ),
 
-    call_expression: $ => prec(PREC.CALL, seq($._expression, $.argument_list)),
+    call_expression: $ =>
+      prec(PREC.CALL, seq($._identifier_expression, $.argument_list)),
 
     argument_list: $ => seq('(', commaSep($._expression), ')'),
 
     field_expression: $ =>
-      seq(prec(PREC.FIELD, seq($._expression, '.')), $._field_identifier),
+      seq(
+        prec(PREC.FIELD, seq($._identifier_expression, '.')),
+        $._field_identifier
+      ),
 
     parenthesized_expression: $ =>
       seq('(', choice($._expression, $.comma_expression), ')'),
@@ -603,8 +612,7 @@ module.exports = grammar({
 
     number_literal: $ => /\d+(\.\d+)?/,
 
-    char_literal: $ =>
-      seq("'", choice($.escape_sequence, token.immediate(/[^\n']/)), "'"),
+    char_literal: $ => seq("'", token.immediate(/[^\n']/), "'"),
 
     concatenated_string: $ => seq($.string_literal, repeat1($.string_literal)),
 
@@ -612,19 +620,23 @@ module.exports = grammar({
       seq(
         '"',
         repeat(
-          choice(token.immediate(prec(1, /[^%\[\\"\n]+/)), $.escape_sequence)
+          choice(
+            token.immediate(prec(1, /[^%\[\\"\n]+/)),
+            $.format_specifier,
+            $.escape_sequence
+          )
         ),
         '"'
       ),
 
-    //FIXME: Replace with AGS String formatting
+    format_specifier: $ =>
+      token.immediate(
+        seq('%', choice(/(0[0-9]+)?d/, 'c', 's', '%', /(.[0-9]+)?f/))
+      ),
+
     escape_sequence: $ =>
       token.immediate(
-        choice(
-          seq('\\', choice('[', '\\', 'n', 'r', "'", '"', '%')),
-          '[',
-          seq('%', choice(/(0[0-9]+)?d/, 'c', 's', '%', /(.[0-9]+)?f/))
-        )
+        choice('[', seq('\\', choice('[', '\\', 'n', 'r', "'", '"', '%')))
       ),
 
     true: $ => 'true',

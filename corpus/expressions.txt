@@ -1,0 +1,173 @@
+============================================
+Number literals
+============================================
+
+int a = 1;
+int b = 0.123;
+
+---
+
+(script
+  (top_level_declaration (primitive_type) (init_literal_declarator (identifier) (number_literal)))
+  (top_level_declaration (primitive_type) (init_literal_declarator (identifier) (number_literal))))
+
+============================================
+Function calls
+============================================
+
+int main() {
+  printf("hi! %d\n", x);
+}
+
+---
+
+(script
+  (function_definition
+    (primitive_type)
+    (function_declarator (identifier) (parameter_list))
+    (compound_statement
+      (expression_statement (call_expression
+        (identifier)
+        (argument_list (string_literal (format_specifier) (escape_sequence)) (identifier)))))))
+
+============================================
+String literals
+============================================
+
+int main() {
+  s = "a";
+  s = "b" "c" "d";
+  s = "\"hi\"";
+}
+
+---
+
+(script
+  (function_definition
+    (primitive_type)
+    (function_declarator (identifier) (parameter_list))
+    (compound_statement
+      (expression_statement (assignment_expression (identifier) (string_literal)))
+      (expression_statement (assignment_expression (identifier) (concatenated_string (string_literal) (string_literal) (string_literal))))
+      (expression_statement (assignment_expression (identifier) (string_literal (escape_sequence) (escape_sequence)))))))
+
+============================================
+Character literals
+============================================
+
+int main() {
+  c = 'a';
+}
+
+---
+
+(script
+  (function_definition
+    (primitive_type)
+    (function_declarator (identifier) (parameter_list))
+    (compound_statement
+      (expression_statement (assignment_expression (identifier) (char_literal))))))
+
+============================================
+Field access
+============================================
+
+int main() {
+  x = s.data1;
+  x = q[data3];
+  s.data1 = x;
+  q[data3] = x;
+}
+
+---
+
+(script
+  (function_definition
+    (primitive_type)
+    (function_declarator (identifier) (parameter_list))
+    (compound_statement
+      (expression_statement (assignment_expression (identifier) (field_expression (identifier) (field_identifier))))
+      (expression_statement (assignment_expression (identifier) (subscript_expression (identifier) (identifier))))
+      (expression_statement (assignment_expression (field_expression (identifier) (field_identifier)) (identifier)))
+      (expression_statement (assignment_expression (subscript_expression (identifier) (identifier)) (identifier))))))
+
+============================================
+Boolean operators
+============================================
+
+int main() {
+  x = !x || !y && !z;
+}
+
+---
+
+(script
+  (function_definition
+    (primitive_type)
+    (function_declarator (identifier) (parameter_list))
+    (compound_statement
+      (expression_statement
+        (assignment_expression (identifier)
+          (logical_expression
+            (logical_expression (identifier))
+            (logical_expression
+              (logical_expression (identifier))
+              (logical_expression (identifier)))))))))
+
+============================================
+Math operators
+============================================
+
+int main() {
+  result = -a / b + c * -d;
+}
+
+---
+
+(script
+  (function_definition
+    (primitive_type)
+    (function_declarator (identifier) (parameter_list))
+    (compound_statement
+      (expression_statement (assignment_expression (identifier)
+        (math_expression
+          (math_expression
+            (math_expression (identifier))
+            (identifier))
+          (math_expression
+            (identifier)
+            (math_expression (identifier)))))))))
+
+============================================
+Assignments
+============================================
+
+int main() {
+  readonly int a = 1;
+  d.e = 3;
+  h[i] = j;
+  k += l;
+  m -= o;
+  n *= p;
+  q /= r;
+  a++;
+  b--;
+}
+
+---
+
+(script
+  (function_definition
+    (primitive_type)
+    (function_declarator (identifier) (parameter_list))
+    (compound_statement
+      (declaration (type_qualifier) (primitive_type) (init_declarator (identifier) (number_literal)))
+      (expression_statement (assignment_expression (field_expression (identifier) (field_identifier)) (number_literal)))
+      (expression_statement (assignment_expression (subscript_expression (identifier) (identifier)) (identifier)))
+      (expression_statement (assignment_expression (identifier) (identifier)))
+      (expression_statement (assignment_expression (identifier) (identifier)))
+      (expression_statement (assignment_expression (identifier) (identifier)))
+      (expression_statement (assignment_expression (identifier) (identifier)))
+      (expression_statement (assignment_expression (identifier)))
+      (expression_statement (assignment_expression (identifier))))))
+
