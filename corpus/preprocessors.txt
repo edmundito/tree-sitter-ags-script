@@ -1,4 +1,14 @@
 ===========================================
+error
+===========================================
+#error Some error occurred!
+
+---
+
+(script
+  (preproc_error (preproc_arg)))
+
+===========================================
 region
 ===========================================
 
@@ -104,10 +114,13 @@ float b;
         (identifier))))
 
 ============================================
-Preprocessor conditionals in functions
+Preprocessor in functions
 ============================================
 
 int main() {
+  #define TEST
+  #error TEST
+
   #ifdef d
     puts("1");
   #endif
@@ -133,6 +146,8 @@ int main() {
     (primitive_type)
     (function_declarator (identifier) (parameter_list))
     (compound_statement
+      (preproc_def (preproc_identifier))
+      (preproc_error (preproc_arg))
       (preproc_ifdef
         (identifier)
         (expression_statement (call_expression (identifier) (argument_list (string_literal)))))
@@ -158,6 +173,8 @@ struct S {
 #ifver 3.4.0
   int f2;
 #endif
+#define TEST
+#error TEST
 };
 
 ---
@@ -167,7 +184,9 @@ struct S {
     (preproc_ifdef (identifier)
       (field_declaration (primitive_type) (field_identifier)))
     (preproc_ifver (version_literal)
-      (field_declaration (primitive_type) (field_identifier))))))
+      (field_declaration (primitive_type) (field_identifier)))
+    (preproc_def (preproc_identifier))
+    (preproc_error (preproc_arg)))))
 
 
 =================================================
@@ -175,6 +194,8 @@ Preprocessor in enum bodies
 =================================================
 
 enum MyEnum {
+#define TEST
+#error TEST
 #ifdef FIRST
   eFirst,
 #endif
@@ -192,6 +213,8 @@ enum MyEnum {
 
 (script
   (enum_declaration (type_identifier) (enumerator_list
+    (preproc_def (preproc_identifier))
+    (preproc_error (preproc_arg))
     (preproc_ifdef (identifier)
       (enumerator (identifier)))
     (preproc_ifver (version_literal)

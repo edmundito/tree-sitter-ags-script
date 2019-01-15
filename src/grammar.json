@@ -1913,6 +1913,14 @@
           },
           "named": true,
           "value": "preproc_region"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "preproc_def"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "preproc_error"
         }
       ]
     },
@@ -2380,6 +2388,14 @@
           },
           "named": true,
           "value": "preproc_region"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "preproc_def"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "preproc_error"
         }
       ]
     },

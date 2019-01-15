@@ -381,7 +381,9 @@ module.exports = grammar({
         $.field_function_declaration,
         alias($.preproc_ifver_in_field_declaration_list, $.preproc_ifver),
         alias($.preproc_ifdef_in_field_declaration_list, $.preproc_ifdef),
-        alias($.preproc_region_in_field_declaration_list, $.preproc_region)
+        alias($.preproc_region_in_field_declaration_list, $.preproc_region),
+        $.preproc_def,
+        $.preproc_error
       ),
 
     field_declaration: $ =>
@@ -455,7 +457,9 @@ module.exports = grammar({
       choice(
         alias($.preproc_ifdef_with_else, $.preproc_ifdef),
         alias($.preproc_ifver_with_else, $.preproc_ifver),
-        alias($.preproc_region_with_else, $.preproc_region)
+        alias($.preproc_region_with_else, $.preproc_region),
+        $.preproc_def,
+        $.preproc_error
       ),
 
     _else_item: $ => choice(repeat1($._else_preproc_item), $._else_statement),
