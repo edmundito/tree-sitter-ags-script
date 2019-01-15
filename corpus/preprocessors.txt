@@ -148,7 +148,7 @@ int main() {
           (return_statement (number_literal)))))))
 
 =================================================
-Preprocessor conditionals in struct bodies
+Preprocessor in struct bodies
 =================================================
 
 struct S {
@@ -170,3 +170,33 @@ struct S {
       (field_declaration (primitive_type) (field_identifier))))))
 
 
+=================================================
+Preprocessor in enum bodies
+=================================================
+
+enum MyEnum {
+#ifdef FIRST
+  eFirst,
+#endif
+#ifver 3.4.0
+  eSecond = 2,
+#endif
+#ifdef SECOND
+  #ifver 3.3.0
+    eThird,
+  #endif
+#endif
+};
+
+---
+
+(script
+  (enum_declaration (type_identifier) (enumerator_list
+    (preproc_ifdef (identifier)
+      (enumerator (identifier)))
+    (preproc_ifver (version_literal)
+      (enumerator (identifier) (number_literal)))
+    (preproc_ifdef (identifier)
+      (preproc_ifver (version_literal)
+        (enumerator (identifier))
+      )))))

@@ -163,7 +163,7 @@ module.exports = grammar({
       seq(
         preprocessor('define'),
         $._preproc_identifier,
-        optional($._expression),
+        optional($.preproc_arg),
         '\n'
       ),
 
@@ -175,7 +175,11 @@ module.exports = grammar({
       '_in_field_declaration_list',
       $ => $._field_declaration_list_item
     ),
-    ...preprocessorRules('_in_enumerator_list', $ => $._enumerator_list_item),
+    ...preprocessorRules(
+      '_in_enumerator_list',
+      $ => $._enumerator_list_item,
+      false
+    ),
     ...preprocessorRules('_with_else', $ => $._else_item, false),
 
     preproc_arg: $ => token(prec(0, repeat1(/.|\\\r?\n/))),
@@ -337,14 +341,24 @@ module.exports = grammar({
     enum_declaration: $ =>
       statement('enum', $._type_identifier, $.enumerator_list),
 
-    enumerator_list: $ => seq('{', commaSep($.enumerator), optional(','), '}'),
+    enumerator_list: $ => seq('{', optional($._enumerator_list_item), '}'),
 
-    _enumerator_list_item: $ =>
+    _enumerator_preproc_item: $ =>
       choice(
-        $.enumerator,
         alias($.preproc_ifver_in_enumerator_list, $.preproc_ifver),
         alias($.preproc_ifdef_in_enumerator_list, $.preproc_ifdef),
-        alias($.preproc_region_in_enumerator_list, $.preproc_region)
+        alias($.preproc_region_in_enumerator_list, $.preproc_region),
+        $.preproc_def,
+        $.preproc_error
+      ),
+
+    // FIXME: Only the very last enumeration, even if nested, can have the optional trailing comma.
+    // In deeply nested enum preprocessors the trailing comma is optional
+    // which may lead the compiler to fail.
+    _enumerator_list_item: $ =>
+      choice(
+        seq($._enumerator_preproc_item, optional($._enumerator_list_item)),
+        seq($.enumerator, optional(seq(',', optional($._enumerator_list_item))))
       ),
 
     struct_declaration: $ =>

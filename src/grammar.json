@@ -467,11 +467,8 @@
           "name": "version_literal"
         },
         {
-          "type": "REPEAT",
-          "content": {
-            "type": "SYMBOL",
-            "name": "_enumerator_list_item"
-          }
+          "type": "SYMBOL",
+          "name": "_enumerator_list_item"
         },
         {
           "type": "STRING",
@@ -500,11 +497,8 @@
           "name": "identifier"
         },
         {
-          "type": "REPEAT",
-          "content": {
-            "type": "SYMBOL",
-            "name": "_enumerator_list_item"
-          }
+          "type": "SYMBOL",
+          "name": "_enumerator_list_item"
         },
         {
           "type": "STRING",
@@ -532,11 +526,8 @@
           ]
         },
         {
-          "type": "REPEAT",
-          "content": {
-            "type": "SYMBOL",
-            "name": "_enumerator_list_item"
-          }
+          "type": "SYMBOL",
+          "name": "_enumerator_list_item"
         },
         {
           "type": "STRING",
@@ -1689,41 +1680,8 @@
           "type": "CHOICE",
           "members": [
             {
-              "type": "SEQ",
-              "members": [
-                {
-                  "type": "SYMBOL",
-                  "name": "enumerator"
-                },
-                {
-                  "type": "REPEAT",
-                  "content": {
-                    "type": "SEQ",
-                    "members": [
-                      {
-                        "type": "STRING",
-                        "value": ","
-                      },
-                      {
-                        "type": "SYMBOL",
-                        "name": "enumerator"
-                      }
-                    ]
-                  }
-                }
-              ]
-            },
-            {
-              "type": "BLANK"
-            }
-          ]
-        },
-        {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "STRING",
-              "value": ","
+              "type": "SYMBOL",
+              "name": "_enumerator_list_item"
             },
             {
               "type": "BLANK"
@@ -1736,13 +1694,9 @@
         }
       ]
     },
-    "_enumerator_list_item": {
+    "_enumerator_preproc_item": {
       "type": "CHOICE",
       "members": [
-        {
-          "type": "SYMBOL",
-          "name": "enumerator"
-        },
         {
           "type": "ALIAS",
           "content": {
@@ -1769,6 +1723,78 @@
           },
           "named": true,
           "value": "preproc_region"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "preproc_def"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "preproc_error"
+        }
+      ]
+    },
+    "_enumerator_list_item": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "_enumerator_preproc_item"
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "_enumerator_list_item"
+                },
+                {
+                  "type": "BLANK"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "enumerator"
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "STRING",
+                      "value": ","
+                    },
+                    {
+                      "type": "CHOICE",
+                      "members": [
+                        {
+                          "type": "SYMBOL",
+                          "name": "_enumerator_list_item"
+                        },
+                        {
+                          "type": "BLANK"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "BLANK"
+                }
+              ]
+            }
+          ]
         }
       ]
     },
