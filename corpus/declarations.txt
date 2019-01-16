@@ -252,3 +252,75 @@ managed struct MyModule {
     (field_declaration_list)
   )
 )
+
+===========================================
+Type qualifiers
+===========================================
+
+readonly int y = 5;
+
+function game_start() {
+  readonly int x = y;
+}
+
+---
+
+(script
+
+  (top_level_declaration (type_qualifier) (primitive_type)
+    (init_literal_declarator (identifier) (number_literal)))
+
+  (function_definition (function_type)
+    (function_declarator (identifier) (parameter_list))
+    (compound_statement
+      (declaration (type_qualifier) (primitive_type)
+        (init_declarator (identifier) (identifier))))))
+
+
+===========================================
+Array declarations
+===========================================
+
+int values[];
+Character* chaps[];
+
+function game_start() {
+  values = new int[5];
+  chaps = new Character[Game.CharacterCount];
+
+  Hotspot* hotps[] = new Hotspot[7];
+}
+
+---
+
+(script
+
+  (top_level_declaration 
+    (primitive_type)
+    (array_declarator (identifier)))
+
+  (top_level_declaration 
+    (type_identifier)
+    (pointer_declarator (array_declarator (identifier))))
+
+  (function_definition (function_type)
+    (function_declarator (identifier) (parameter_list))
+    (compound_statement
+      (expression_statement
+        (assignment_expression
+          (identifier)
+          (new_expression (new_array_expression (primitive_type) (number_literal)))))
+      
+      (expression_statement
+        (assignment_expression
+          (identifier)
+          (new_expression
+            (new_array_expression (type_identifier) (field_expression (identifier) (field_identifier))))))
+
+      (declaration
+        (type_identifier)
+        (init_declarator
+          (pointer_declarator (array_declarator (identifier)))
+          (new_expression (new_array_expression (type_identifier) (number_literal))))))))
+
+

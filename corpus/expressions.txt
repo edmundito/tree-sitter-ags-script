@@ -143,7 +143,9 @@ Assignments
 ============================================
 
 int main() {
-  readonly int a = 1;
+  a = 1;
+  b = new Managed;
+  c = new int[5];
   d.e = 3;
   h[i] = j;
   k += l;
@@ -161,7 +163,12 @@ int main() {
     (primitive_type)
     (function_declarator (identifier) (parameter_list))
     (compound_statement
-      (declaration (type_qualifier) (primitive_type) (init_declarator (identifier) (number_literal)))
+      (expression_statement (assignment_expression (identifier) (number_literal)))
+      (expression_statement (assignment_expression
+        (identifier) (new_expression (type_identifier))))
+      (expression_statement (assignment_expression
+        (identifier)
+        (new_expression (new_array_expression (primitive_type) (number_literal)))))
       (expression_statement (assignment_expression (field_expression (identifier) (field_identifier)) (number_literal)))
       (expression_statement (assignment_expression (subscript_expression (identifier) (identifier)) (identifier)))
       (expression_statement (assignment_expression (identifier) (identifier)))

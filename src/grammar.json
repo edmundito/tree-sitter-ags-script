@@ -1523,8 +1523,17 @@
           "value": "="
         },
         {
-          "type": "SYMBOL",
-          "name": "_expression"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "new_expression"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "_expression"
+            }
+          ]
         }
       ]
     },
@@ -2936,27 +2945,28 @@
             "value": "new"
           },
           {
-            "type": "SYMBOL",
-            "name": "_type_specifier"
-          },
-          {
             "type": "CHOICE",
             "members": [
               {
                 "type": "SYMBOL",
-                "name": "new_array_declator"
+                "name": "_type_specifier"
               },
               {
-                "type": "BLANK"
+                "type": "SYMBOL",
+                "name": "new_array_expression"
               }
             ]
           }
         ]
       }
     },
-    "new_array_declator": {
+    "new_array_expression": {
       "type": "SEQ",
       "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_type_specifier"
+        },
         {
           "type": "STRING",
           "value": "["

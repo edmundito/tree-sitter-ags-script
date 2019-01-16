@@ -321,7 +321,8 @@ module.exports = grammar({
         )
       ),
 
-    init_declarator: $ => seq($._declarator, '=', $._expression),
+    init_declarator: $ =>
+      seq($._declarator, '=', choice($.new_expression, $._expression)),
 
     init_literal_declarator: $ =>
       seq($._pointerless_declarator, '=', choice($.identifier, $._literal)),
@@ -558,10 +559,10 @@ module.exports = grammar({
     new_expression: $ =>
       prec.right(
         PREC.NEW,
-        seq('new', $._type_specifier, optional($.new_array_declator))
+        seq('new', choice($._type_specifier, $.new_array_expression))
       ),
 
-    new_array_declator: $ => seq('[', $._expression, ']'),
+    new_array_expression: $ => seq($._type_specifier, '[', $._expression, ']'),
 
     logical_expression: $ =>
       choice(
