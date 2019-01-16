@@ -324,3 +324,44 @@ function game_start() {
           (new_expression (new_array_expression (type_identifier) (number_literal))))))))
 
 
+===========================================
+Pointer declarations
+===========================================
+
+Character* chaps;
+Character* chaps[];
+
+function game_start() {
+  Character* lchaps = new Character;
+  Character* lchaps[] = new Character[8];
+}
+
+---
+
+(script
+
+  (top_level_declaration 
+    (type_identifier)
+    (pointer_declarator (identifier)))
+
+  (top_level_declaration 
+    (type_identifier)
+    (pointer_declarator (array_declarator (identifier))))
+
+  (function_definition (function_type)
+    (function_declarator (identifier) (parameter_list))
+    (compound_statement
+      (declaration 
+        (type_identifier)
+        (init_declarator
+          (pointer_declarator (identifier))
+          (new_expression (type_identifier))))
+      
+      (declaration 
+        (type_identifier)
+        (init_declarator
+          (pointer_declarator (array_declarator (identifier)))
+          (new_expression
+            (new_array_expression (type_identifier) (number_literal))))))))
+
+
