@@ -5,6 +5,7 @@ declaration
 int a;
 int b, c;
 char d = 'd';
+float negative = -1.5;
 
 ---
 
@@ -13,7 +14,10 @@ char d = 'd';
   (top_level_declaration (primitive_type) (identifier) (identifier))
   (top_level_declaration
     (primitive_type)
-    (init_literal_declarator (identifier) (char_literal))))
+    (init_literal_declarator (identifier) (char_literal)))
+  (top_level_declaration
+    (primitive_type)
+    (init_literal_declarator (identifier) (math_expression (number_literal)))))
 
 ===========================================
 export

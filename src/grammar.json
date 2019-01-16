@@ -3686,6 +3686,15 @@
       "type": "CHOICE",
       "members": [
         {
+          "type": "ALIAS",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_negative_number_literal"
+          },
+          "named": true,
+          "value": "math_expression"
+        },
+        {
           "type": "SYMBOL",
           "name": "number_literal"
         },
@@ -3706,6 +3715,23 @@
           "name": "char_literal"
         }
       ]
+    },
+    "_negative_number_literal": {
+      "type": "PREC_RIGHT",
+      "value": 13,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "-"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "number_literal"
+          }
+        ]
+      }
     },
     "version_literal": {
       "type": "PATTERN",

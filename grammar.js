@@ -663,7 +663,17 @@ module.exports = grammar({
     null: $ => 'null',
 
     _literal: $ =>
-      choice($.number_literal, $.true, $.false, $.null, $.char_literal),
+      choice(
+        alias($._negative_number_literal, $.math_expression),
+        $.number_literal,
+        $.true,
+        $.false,
+        $.null,
+        $.char_literal
+      ),
+
+    _negative_number_literal: $ =>
+      prec.right(PREC.UNARY, seq('-', $.number_literal)),
 
     version_literal: $ => /\d+(\.\d+){0,3}/,
 
