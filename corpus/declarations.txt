@@ -1,5 +1,5 @@
 ===========================================
-declaration
+top level declaration
 ===========================================
 
 int a;
@@ -18,6 +18,33 @@ float negative = -1.5;
   (top_level_declaration
     (primitive_type)
     (init_literal_declarator (identifier) (math_expression (number_literal)))))
+
+===========================================
+declaration in function
+===========================================
+
+function game_start() {
+  int a;
+  int b, c;
+  char d = 'd';
+  float negative = -1.5;
+}
+
+---
+
+(script
+  (function_definition (function_type)
+  (function_declarator (identifier) (parameter_list))
+    (compound_statement
+      (declaration (primitive_type) (identifier))
+        (declaration (primitive_type) (identifier) (identifier))
+        (declaration
+          (primitive_type)
+          (init_declarator (identifier) (char_literal)))
+        (declaration
+          (primitive_type)
+          (init_declarator (identifier) (math_expression (number_literal)))))))
+  
 
 ===========================================
 export
