@@ -1,6 +1,6 @@
 {
   "name": "tree-sitter-ags-script",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Adventure Game Studio (AGS) Script grammar for tree-sitter.",
   "main": "index.js",
   "scripts": {
@@ -8,8 +8,19 @@
     "test": "tree-sitter test",
     "build": "tree-sitter generate && npm i && tree-sitter test"
   },
-  "author": "",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/edmundito/tree-sitter-ags-script.git"
+  },
+  "bugs": {
+    "url": "https://github.com/edmundito/tree-sitter-ags-script/issues"
+  },
+  "keywords": [
+    "tree-sitter",
+    "ags",
+    "ags-script"
+  ],
   "dependencies": {
     "nan": "^2.12.1"
   },
