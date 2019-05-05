@@ -3,7 +3,7 @@ image: Visual Studio 2015
 environment:
   NODEJS_VERSION: "8"
   PREBUILD_UPLOAD:
-    secure: 0M8e0ymFVhGFGTJQ+yHvEF7PK09mS2v2L3zfCW7OztoRmsCW7NlUx7tyDbtpy5/
+    secure: 0M8e0ymFVhGFGTJQ+yHvEF7PK09mS2v2L3zfCW7OztoRmsCW7NlUx7tyDbtpy5/n
 
 platform:
   - x64
