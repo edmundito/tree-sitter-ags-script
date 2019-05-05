@@ -83,3 +83,4 @@ typings/
 *.asc
 *.ash
 build/
+prebuilds/
