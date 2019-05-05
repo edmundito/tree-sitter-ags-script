@@ -1,5 +1,6 @@
 # tree-sitter-ags-script
 
+[![CircleCI](https://circleci.com/gh/edmundito/tree-sitter-ags-script.svg?style=svg)](https://circleci.com/gh/edmundito/tree-sitter-ags-script)
 [![Build status](https://ci.appveyor.com/api/projects/status/brtkfcqyb9ogu08p?svg=true)](https://ci.appveyor.com/project/edmundito/tree-sitter-ags-script)
 
 [Adventure Game Studio (AGS)](https://adventuregamestudio.co.uk) script grammar for [tree-sitter](https://github.com/tree-sitter/tree-sitter). Adapted from [tree-sitter-c](https://github.com/tree-sitter/tree-sitter-c).
