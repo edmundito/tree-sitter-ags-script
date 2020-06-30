@@ -16,7 +16,7 @@ branches:
   - "/^v.*$/"
 deploy:
   provider: script
-  script: npm run prebuild && npm run prebuild:upload -u ${PREBUILD_UPLOAD}
+  script: npm run prebuild && npm run prebuild:upload -- -u ${PREBUILD_UPLOAD}
   skip_cleanup: true
   on:
     all_branches: false
