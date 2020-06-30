@@ -12,3 +12,7 @@ In order to work with this repo, you may need to install `tree-sitter-cli`:
 ```sh
 npm install -g tree-sitter-cli
 ```
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md)
