@@ -330,7 +330,7 @@ module.exports = grammar({
     compound_statement: $ => seq('{', repeat($._block_level_item), '}'),
 
     field_access_specifier: $ =>
-      choice('import', 'attribute', 'writeprotected', 'protected'),
+      choice('import', 'attribute', 'readonly', 'writeprotected', 'protected'),
 
     struct_type_qualifier: $ => 'managed',
 
