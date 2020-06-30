@@ -1596,6 +1596,10 @@
         },
         {
           "type": "STRING",
+          "value": "readonly",
+        },
+        {
+          "type": "STRING",
           "value": "writeprotected"
         },
         {
