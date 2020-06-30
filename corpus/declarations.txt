@@ -204,6 +204,7 @@ struct MyModule {
   int MyVar;
   writeprotected int MyReadOnlyVar;
   protected int my_var;
+  import attribute readonly int ID;
 };
 
 ---
@@ -215,6 +216,7 @@ struct MyModule {
       (field_declaration (primitive_type) (field_identifier))
       (field_declaration (field_access_specifier) (primitive_type) (field_identifier))
       (field_declaration (field_access_specifier) (primitive_type) (field_identifier))
+      (field_declaration (field_access_specifier) (field_access_specifier) (field_access_specifier) (primitive_type) (field_identifier))
     )
   )
 )
