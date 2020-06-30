@@ -150,8 +150,8 @@ module.exports = grammar({
       choice(
         $.declaration,
         $._statement,
+        // $.preproc_def,
         $.preproc_error,
-        $.preproc_def,
         alias($.preproc_ifver_in_block, $.preproc_ifver),
         alias($.preproc_ifdef_in_block, $.preproc_ifdef),
         alias($.preproc_region_in_block, $.preproc_region)

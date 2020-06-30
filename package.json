@@ -6,7 +6,7 @@
   "scripts": {
     "generate": "tree-sitter generate",
     "install": "prebuild-install || node-gyp rebuild",
-    "prebuild": "prebuild -r electron -t 1.6.0 -t 1.7.0 -t 1.8.0 -t 2.0.0 -t 3.0.0 -t 4.0.0 -t 5.0.0 --strip --verbose",
+    "prebuild": "prebuild -r electron -t 3.0.0 -t 4.0.0 -t 5.0.0 --strip --verbose",
     "prebuild:upload": "prebuild --upload-all",
     "test": "tree-sitter test",
     "test-windows": "tree-sitter test",
@@ -30,7 +30,7 @@
     "prebuild-install": "^5.3.0"
   },
   "devDependencies": {
-    "prebuild": "^7.6.2",
-    "tree-sitter-cli": "^0.13.15"
+    "prebuild": "^10.0.0",
+    "tree-sitter-cli": "0.16.8"
   }
 }

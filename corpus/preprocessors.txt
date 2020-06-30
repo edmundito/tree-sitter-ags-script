@@ -118,7 +118,6 @@ Preprocessor in functions
 ============================================
 
 int main() {
-  #define TEST
   #error TEST
 
   #ifdef d
@@ -146,7 +145,6 @@ int main() {
     (primitive_type)
     (function_declarator (identifier) (parameter_list))
     (compound_statement
-      (preproc_def (preproc_identifier))
       (preproc_error (preproc_arg))
       (preproc_ifdef
         (identifier)
